@@ -512,7 +512,7 @@ All contributions must be made through GitHub. The following workflow applies to
 
 ## License
 
-This project was developed as part of the CP476B – Internet Computing course at [University Name], Spring 2026. It is intended solely for academic evaluation purposes.
+This project was developed as part of the CP476B – Internet Computing course at Wilfrid Laurier University (WLU), Spring 2026. It is intended solely for academic evaluation purposes.
 
 ---
 
