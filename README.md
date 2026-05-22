@@ -98,14 +98,14 @@
 | Name | Student ID | Role |
 |---|---|---|
 | Zulqarnayeen Sadid | 169075017 | Project Manager |
-| [Member 2] | [ID] | Front-End Lead |
-| [Member 3] | [ID] | Front-End Developer |
-| [Member 4] | [ID] | Front-End Developer |
-| [Member 5] | [ID] | Back-End Lead |
-| [Member 6] | [ID] | Back-End Developer |
-| [Member 7] | [ID] | Back-End Developer |
-| [Member 8] | [ID] | Database Architect |
-| [Member 9] | [ID] | Security & Testing Lead |
+| Jeff Vu | 169058539 | Front-End Lead |
+| Hamza Mohammed | 169061024 | Front-End Developer |
+| Arren Haroutunian | 210603250 | Front-End Developer |
+| Gunivaj Tiwana | 169033176 | Back-End Lead |
+| Harshaan Rehal | 169057121 | Back-End Developer |
+| Dawood Ahmed | 169046795 | Back-End Developer |
+| Moosa Ahmed | 169046796 | Database Architect |
+| Pushti Nakum | 169053401 | Security & Testing Lead |
 | Fatma Mohamed Yasin | 169075296 | Documentation Lead |
 
 ---
