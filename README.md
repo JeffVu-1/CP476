@@ -97,7 +97,7 @@
 
 | Name | Student ID | Role |
 |---|---|---|
-| [Member 1] | [ID] | Project Manager |
+| Zulqarnayeen Sadid | 169075017 | Project Manager |
 | [Member 2] | [ID] | Front-End Lead |
 | [Member 3] | [ID] | Front-End Developer |
 | [Member 4] | [ID] | Front-End Developer |
@@ -106,7 +106,7 @@
 | [Member 7] | [ID] | Back-End Developer |
 | [Member 8] | [ID] | Database Architect |
 | [Member 9] | [ID] | Security & Testing Lead |
-| [Member 10] | [ID] | Documentation Lead |
+| Fatma Mohamed Yasin | 169075296 | Documentation Lead |
 
 ---
 
