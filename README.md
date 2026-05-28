@@ -77,17 +77,18 @@
 
 ## Technology Stack
 
-| Layer | Technology |
-|---|---|
-| Front-End | HTML5, CSS3, JavaScript (Vanilla ES6+) |
-| Back-End | Node.js, Express.js |
-| Database | MySQL / MariaDB |
-| Version Control | Git, GitHub |
-| Project Management | GitHub Projects (Kanban) |
-| Documentation | GitHub Wiki (Markdown) |
-| Password Hashing | bcrypt (via bcryptjs) |
-| Session Management | express-session |
-| DB Driver | mysql2 |
+| Layer              | Technology                   |
+| ------------------ | ---------------------------- |
+| Front-End          | Next.js (React, Javascript)  |
+| Front-End Hosting          | Vercel |
+| Back-End           | Next.js API Routes (Node.js) |
+| Database           | PostgreSQL                   |
+| Database Hosting   | SupaBase                     |
+| Version Control    | Git, GitHub                  |
+| Project Management | GitHub Projects (Kanban)     |
+| Documentation      | GitHub Wiki (Markdown)       |
+| Password Hashing   | bcrypt (via bcryptjs)        |
+
 
 > **Note:** No external CSS frameworks (e.g., Bootstrap), UI libraries, or unapproved third-party dependencies are used. All code relies exclusively on course-covered technologies as required by CP476B.
 
