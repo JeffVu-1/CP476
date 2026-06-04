@@ -15,38 +15,48 @@
 6. [Getting Started](#getting-started)
    - [Prerequisites](#prerequisites)
    - [Database Setup](#database-setup)
-   - [Running the Back-End](#running-the-back-end)
-   - [Running the Front-End](#running-the-front-end)
+   - [Running the Application](#running-the-application)
 7. [Environment Configuration](#environment-configuration)
 8. [Database Schema Overview](#database-schema-overview)
 9. [API Routes Overview](#api-routes-overview)
 10. [Security Practices](#security-practices)
 11. [Testing](#testing)
 12. [Project Management](#project-management)
-13. [Milestones](#milestones)
-14. [Contributing](#contributing)
-15. [License](#license)
+13. [License](#license)
 
 ---
 
 ## Project Overview
 
-**Book It.** is a full-stack web application that acts as a central hub connecting customers with local and online service providers. The platform allows service providers to list their services, manage availability, and receive bookings, while customers can discover services by browsing predefined categories or by describing their problem in plain language.
+**Book It.** is a full-stack web application that acts as a central hub connecting customers with local and online service providers. It eliminates the need to visit multiple websites to book different services by offering two discovery modes:
 
-**Core Goals:**
-- Make booking local services easier, faster, and more flexible for both customers and providers.
-- Eliminate the need for customers to visit multiple websites or rely on word-of-mouth to find trusted providers.
-- Give service providers a lightweight, unified dashboard to manage listings, time slots, and bookings.
+- **Category Browsing** — Explore services organized into categories such as Hair Styling, Lawn Care, Graphic Design, Tutoring, Home Repair, Cleaning, Fitness Training, Photography, and Consulting.
+- **Natural-Language Search** — Describe a problem (e.g., *"My lawn is very dry and I want to make it look better"*) and receive relevant service suggestions via keyword matching.
 
-**Two Discovery Modes:**
-1. **Category Browsing** — Explore services organized into categories such as Hair Styling, Lawn Care, Graphic Design, Tutoring, Home Repair, Cleaning, Fitness Training, Photography, and Consulting.
-2. **Natural-Language Search** — Describe a problem (e.g., *"My lawn is very dry and I want to make it look better"*) and receive relevant service suggestions via keyword matching.
+Once a customer finds a service, they can view details, select a date, choose an available time slot, and confirm a booking — all in one place. Service providers manage their listings and incoming bookings through a dedicated dashboard.
+
+**In Scope:**
+- User registration and login (customer and provider roles)
+- Service listing creation, editing, and deletion by providers
+- Category-based service browsing and natural-language keyword search
+- Service detail page with date and time-slot selection
+- Appointment booking, viewing, and cancellation
+- Provider and customer dashboards
+- Server-side and client-side input validation
+- Basic security hygiene: parameterized queries, XSS prevention
+
+**Out of Scope:**
+- Payment processing
+- Real-time messaging
+- Email/SMS notifications
+- Full AI/ML natural-language processing
+- Mobile native app
 
 ---
 
 ## Features
 
-### Must Have (Implemented)
+### Must Have
 - User registration and login for customers and service providers (role-based)
 - Service listing management — Create, Read, Update, Delete (CRUD) by providers
 - Category-based service browsing
@@ -55,9 +65,8 @@
 - Appointment booking by customers (create, view, cancel)
 - Provider dashboard — view and manage all incoming bookings
 - Customer dashboard — view upcoming and past bookings
-- Server-side input validation on all forms and endpoints
-- Secure password hashing with bcrypt
-- SQL injection prevention via parameterized prepared statements
+- Server-side input validation on all forms and API routes
+- SQL injection prevention via parameterized queries through Supabase client
 
 ### Should Have
 - Natural-language keyword-matching search
@@ -77,20 +86,16 @@
 
 ## Technology Stack
 
-| Layer              | Technology                   |
-| ------------------ | ---------------------------- |
-| Front-End          | Next.js (React, Javascript)  |
-| Front-End Hosting          | Vercel |
-| Back-End           | Next.js API Routes (Node.js) |
-| Database           | PostgreSQL                   |
-| Database Hosting   | SupaBase                     |
-| Version Control    | Git, GitHub                  |
-| Project Management | GitHub Projects (Kanban)     |
-| Documentation      | GitHub Wiki (Markdown)       |
-| Password Hashing   | bcrypt (via bcryptjs)        |
-
-
-> **Note:** No external CSS frameworks (e.g., Bootstrap), UI libraries, or unapproved third-party dependencies are used. All code relies exclusively on course-covered technologies as required by CP476B.
+| Layer | Technology |
+|---|---|
+| Front-End | Next.js (React, JavaScript) |
+| Back-End | Next.js API Routes (Node.js) |
+| Front-End & API Hosting | Vercel |
+| Database | PostgreSQL (via Supabase) |
+| Database Hosting | Supabase (cloud-hosted) |
+| Version Control | Git, GitHub |
+| Project Management | GitHub Projects (Kanban) |
+| Documentation | GitHub Wiki (Markdown) |
 
 ---
 
@@ -102,7 +107,7 @@
 | Jeff Vu | 169058539 | Front-End Lead |
 | Hamza Mohammed | 169061024 | Front-End Developer |
 | Arren Haroutunian | 210603250 | Front-End Developer |
-| Gunivaj Tiwana | 169033176 | Back-End Lead |
+| Gurnivaj Tiwana | 169033176 | Back-End Lead |
 | Harshaan Rehal | 169057121 | Back-End Developer |
 | Dawood Ahmed | 169046795 | Back-End Developer |
 | Moosa Ahmed | 169046796 | Database Architect |
@@ -118,61 +123,85 @@ book-it/
 ├── README.md                        ← This file
 ├── links.txt                        ← GitHub repo, Kanban board, and Wiki URLs
 ├── .gitignore
+├── next.config.js                   ← Next.js configuration
+├── package.json
+├── package-lock.json
 │
 ├── docs/
 │   ├── milestone-01/                ← M1 proposal, wireframes, user stories
 │   ├── milestone-02/                ← M2 ER diagram, SQL schema, front-end screenshots
 │   └── milestone-03/                ← M3 testing report, demo video link, slides
 │
-├── frontend/
-│   ├── index.html                   ← Homepage (category grid + search bar)
-│   ├── css/
-│   │   └── style.css                ← Global stylesheet
-│   ├── js/
-│   │   ├── main.js                  ← Shared utilities and DOM helpers
-│   │   ├── auth.js                  ← Login / registration form logic
-│   │   ├── services.js              ← Service listing and search logic
-│   │   ├── booking.js               ← Booking form, slot fetching, confirmation
-│   │   ├── dashboard-customer.js    ← Customer dashboard interactions
-│   │   └── dashboard-provider.js   ← Provider dashboard interactions
-│   └── pages/
-│       ├── login.html
-│       ├── register.html
-│       ├── services.html            ← Category / search results listing
-│       ├── service-detail.html      ← Individual service detail + reviews
-│       ├── book.html                ← Booking form (date + slot picker)
-│       ├── booking-confirmation.html
-│       ├── dashboard-customer.html
-│       ├── dashboard-provider.html
-│       ├── create-service.html
-│       ├── edit-service.html
-│       └── manage-availability.html
+├── public/                          ← Static assets (images, icons, fonts)
 │
-├── backend/
-│   ├── server.js                    ← Express entry point
-│   ├── package.json
-│   ├── package-lock.json
+├── src/
+│   ├── app/                         ← Next.js App Router pages and layouts
+│   │   ├── layout.js                ← Root layout (shared header/footer)
+│   │   ├── page.js                  ← Homepage (category grid + search bar)
+│   │   ├── globals.css              ← Global stylesheet
+│   │   │
+│   │   ├── login/
+│   │   │   └── page.js
+│   │   ├── register/
+│   │   │   └── page.js
+│   │   ├── services/
+│   │   │   ├── page.js              ← Category / search results listing
+│   │   │   └── [id]/
+│   │   │       └── page.js          ← Individual service detail + reviews
+│   │   ├── book/
+│   │   │   └── [serviceId]/
+│   │   │       └── page.js          ← Booking form (date + slot picker)
+│   │   ├── booking-confirmation/
+│   │   │   └── page.js
+│   │   ├── dashboard/
+│   │   │   ├── customer/
+│   │   │   │   └── page.js          ← Customer dashboard
+│   │   │   └── provider/
+│   │   │       └── page.js          ← Provider dashboard
+│   │   ├── create-service/
+│   │   │   └── page.js
+│   │   ├── edit-service/
+│   │   │   └── [id]/
+│   │   │       └── page.js
+│   │   └── manage-availability/
+│   │       └── page.js
 │   │
-│   ├── routes/
-│   │   ├── auth.js                  ← POST /api/auth/register, /login, /logout
-│   │   ├── services.js              ← GET/POST/PUT/DELETE /api/services
-│   │   ├── timeslots.js             ← GET/POST/DELETE /api/timeslots
-│   │   ├── bookings.js              ← GET/POST/PATCH /api/bookings
-│   │   └── reviews.js               ← GET/POST /api/reviews
-│   │
-│   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── serviceController.js
-│   │   ├── timeslotController.js
-│   │   ├── bookingController.js
-│   │   └── reviewController.js
-│   │
-│   ├── middleware/
-│   │   ├── auth.js                  ← Session authentication guard
-│   │   └── roleCheck.js             ← Role-based access (customer vs provider)
-│   │
+│   └── api/                         ← Next.js API Routes (back-end endpoints)
+│       ├── auth/
+│       │   ├── register/
+│       │   │   └── route.js         ← POST /api/auth/register
+│       │   ├── login/
+│       │   │   └── route.js         ← POST /api/auth/login
+│       │   └── logout/
+│       │       └── route.js         ← POST /api/auth/logout
+│       ├── services/
+│       │   ├── route.js             ← GET, POST /api/services
+│       │   └── [id]/
+│       │       └── route.js         ← GET, PUT, DELETE /api/services/:id
+│       ├── timeslots/
+│       │   ├── route.js             ← POST /api/timeslots
+│       │   └── [serviceId]/
+│       │       └── route.js         ← GET, DELETE /api/timeslots/:serviceId
+│       ├── bookings/
+│       │   ├── route.js             ← POST /api/bookings
+│       │   ├── customer/
+│       │   │   └── route.js         ← GET /api/bookings/customer
+│       │   ├── provider/
+│       │   │   └── route.js         ← GET /api/bookings/provider
+│       │   └── [id]/
+│       │       ├── cancel/
+│       │       │   └── route.js     ← PATCH /api/bookings/:id/cancel
+│       │       └── status/
+│       │           └── route.js     ← PATCH /api/bookings/:id/status
+│       └── reviews/
+│           ├── route.js             ← POST /api/reviews
+│           └── [serviceId]/
+│               └── route.js         ← GET /api/reviews/:serviceId
+│
+├── lib/
+│   ├── supabase.js                  ← Supabase client initialization
+│   ├── auth.js                      ← Session/auth helper utilities
 │   └── db/
-│       ├── connection.js            ← MySQL connection pool (mysql2)
 │       └── schema.sql               ← All CREATE TABLE statements
 │
 └── tests/
@@ -188,171 +217,119 @@ book-it/
 
 ### Prerequisites
 
-Ensure the following are installed on your machine before proceeding:
+Ensure the following are installed before proceeding:
 
-- **Node.js** v18 or higher — [https://nodejs.org](https://nodejs.org)
-- **npm** v9 or higher (included with Node.js)
-- **MySQL** v8 or **MariaDB** v10.6+ — [https://dev.mysql.com/downloads](https://dev.mysql.com/downloads)
+- **Node.js** — [https://nodejs.org](https://nodejs.org)
+- **npm** (included with Node.js)
 - **Git** — [https://git-scm.com](https://git-scm.com)
-
-Verify installations:
-
-```bash
-node --version
-npm --version
-mysql --version
-git --version
-```
+- A **Supabase** account — [https://supabase.com](https://supabase.com)
 
 ---
 
 ### Database Setup
 
-**1. Start your MySQL server.**
+The application uses **Supabase** as its cloud-hosted PostgreSQL database. No local database installation is required.
 
-```bash
-# macOS (Homebrew)
-brew services start mysql
+**1. Create a Supabase project.**
 
-# Windows — start via MySQL Workbench or Services panel
+- Go to [https://supabase.com](https://supabase.com) and sign in.
+- Click **New Project**, give it a name (e.g., `bookit`), choose a region, and set a database password.
+- Wait for the project to finish provisioning.
 
-# Linux
-sudo systemctl start mysql
-```
+**2. Run the schema.**
 
-**2. Log into MySQL as root.**
+- In your Supabase project dashboard, navigate to **SQL Editor**.
+- Open `lib/db/schema.sql` from this repository and paste the contents into the editor.
+- Click **Run** to create all six tables: `categories`, `users`, `services`, `time_slots`, `bookings`, and `reviews`.
 
-```bash
-mysql -u root -p
-```
+**3. (Optional) Seed the categories table.**
 
-**3. Create the database and a dedicated user.**
+In the Supabase SQL Editor, run:
 
 ```sql
-CREATE DATABASE bookit;
-CREATE USER 'bookit_user'@'localhost' IDENTIFIED BY 'your_password_here';
-GRANT ALL PRIVILEGES ON bookit.* TO 'bookit_user'@'localhost';
-FLUSH PRIVILEGES;
-EXIT;
-```
-
-**4. Run the schema file to create all tables.**
-
-```bash
-mysql -u bookit_user -p bookit < backend/db/schema.sql
-```
-
-This creates all six tables: `categories`, `users`, `services`, `time_slots`, `bookings`, and `reviews`, with all primary keys, foreign keys, and constraints.
-
-**5. (Optional) Seed the categories table.**
-
-```sql
-USE bookit;
-
 INSERT INTO categories (name, icon_emoji) VALUES
-  ('Hair Styling',    '✂️'),
-  ('Lawn Care',       '🌿'),
-  ('Graphic Design',  '🎨'),
-  ('Tutoring',        '📚'),
-  ('Home Repair',     '🔨'),
-  ('Cleaning',        '🧹'),
-  ('Fitness Training','💪'),
-  ('Photography',     '📷'),
-  ('Consulting',      '💼');
+  ('Hair Styling',     '✂️'),
+  ('Lawn Care',        '🌿'),
+  ('Graphic Design',   '🎨'),
+  ('Tutoring',         '📚'),
+  ('Home Repair',      '🔨'),
+  ('Cleaning',         '🧹'),
+  ('Fitness Training', '💪'),
+  ('Photography',      '📷'),
+  ('Consulting',       '💼');
 ```
+
+**4. Copy your Supabase credentials.**
+
+In your Supabase project dashboard, go to **Project Settings → API** and copy your Project URL and anon/public key for your `.env.local` file.
 
 ---
 
-### Running the Back-End
+### Running the Application
 
-**1. Navigate to the backend directory.**
-
-```bash
-cd backend
-```
-
-**2. Install dependencies.**
+**1. Clone the repository and install dependencies.**
 
 ```bash
+git clone <your-repo-url>
+cd book-it
 npm install
 ```
 
-**3. Create your environment configuration file** (see [Environment Configuration](#environment-configuration) below).
+**2. Create your `.env.local` file** (see [Environment Configuration](#environment-configuration) below).
 
-**4. Start the server.**
+**3. Start the development server.**
 
 ```bash
-# Development (with auto-restart on file changes)
 npm run dev
+```
 
-# Production
+The application will start on **http://localhost:3000**.
+
+**4. To build for production:**
+
+```bash
+npm run build
 npm start
 ```
 
-The server will start on **http://localhost:3000** by default (or the port set in your `.env` file).
-
-You should see:
-
-```
-[Book It.] Server running on http://localhost:3000
-[Book It.] Connected to MySQL database: bookit
-```
-
----
-
-### Running the Front-End
-
-The front-end is plain HTML/CSS/JavaScript served as static files directly by Express. No separate build step is required.
-
-Once the back-end server is running, open your browser and navigate to:
-
-```
-http://localhost:3000
-```
-
-The Express server is configured to serve all files from the `frontend/` directory.
-
-> **Note:** Do not open the HTML files directly by double-clicking them in your file system (i.e., via `file://` protocol). The front-end makes `fetch()` API calls to the back-end, which require the server to be running. Always access the app through `http://localhost:3000`.
+> **Deployment:** The application is deployed to **Vercel**. Push to the `main` branch to trigger an automatic deployment. Ensure all environment variables are configured in the Vercel project dashboard.
 
 ---
 
 ## Environment Configuration
 
-Create a file named `.env` in the `backend/` directory with the following contents. This file is listed in `.gitignore` and must **never** be committed to the repository.
+Create a file named `.env.local` in the root of the project. This file is listed in `.gitignore` and must **never** be committed to the repository.
 
 ```env
-# Server
-PORT=3000
-NODE_ENV=development
-
-# Database
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=bookit
-DB_USER=bookit_user
-DB_PASSWORD=your_password_here
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
 
 # Session
 SESSION_SECRET=replace_this_with_a_long_random_secret_string
 SESSION_MAX_AGE=86400000
+
+# App
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ```
 
 | Variable | Description |
 |---|---|
-| `PORT` | Port the Express server listens on (default: 3000) |
-| `DB_HOST` | MySQL host (typically `localhost` for local development) |
-| `DB_PORT` | MySQL port (default: 3306) |
-| `DB_NAME` | Name of the database created during setup |
-| `DB_USER` | MySQL username created for this project |
-| `DB_PASSWORD` | Password for the MySQL user |
-| `SESSION_SECRET` | A long, random string used to sign the session cookie — keep this secret |
+| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL (found in Project Settings → API) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase public anon key — safe to expose client-side |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key — **server-side only, never expose client-side** |
+| `SESSION_SECRET` | A long, random string used to sign session cookies — keep this secret |
 | `SESSION_MAX_AGE` | Session lifetime in milliseconds (86400000 = 24 hours) |
+| `NEXT_PUBLIC_BASE_URL` | Base URL of the app (change to your Vercel URL in production) |
+
+> **Important:** Variables prefixed with `NEXT_PUBLIC_` are exposed to the browser. Never prefix `SUPABASE_SERVICE_ROLE_KEY` with `NEXT_PUBLIC_`.
 
 ---
 
 ## Database Schema Overview
 
-The application uses six relational tables. All foreign keys are enforced with `ON DELETE CASCADE` where appropriate.
+The application uses six relational tables hosted on Supabase (PostgreSQL).
 
 | Table | Description |
 |---|---|
@@ -365,21 +342,22 @@ The application uses six relational tables. All foreign keys are enforced with `
 
 **Key Relationships:**
 
-```
-users (provider) ──< services ──< time_slots
-                                       │
-users (customer) ──< bookings >────────┘
-                        │
-                     reviews (one per booking)
-```
+| From | To | Relationship |
+|---|---|---|
+| users (provider) | services | One provider has many services |
+| services | time_slots | One service has many time slots |
+| users (customer) | bookings | One customer has many bookings |
+| time_slots | bookings | One booking links to one time slot (UNIQUE) |
+| bookings | reviews | One completed booking has one review (UNIQUE) |
+| categories | services | One category contains many services |
 
-The full `CREATE TABLE` SQL is located at `backend/db/schema.sql`.
+The full `CREATE TABLE` SQL is located at `lib/db/schema.sql`.
 
 ---
 
 ## API Routes Overview
 
-All API endpoints are prefixed with `/api`. Responses are in JSON format.
+All API endpoints live under `src/api/` and are accessed at `/api/...`. Responses are in JSON format.
 
 ### Authentication — `/api/auth`
 
@@ -405,7 +383,7 @@ All API endpoints are prefixed with `/api`. Responses are in JSON format.
 |---|---|---|---|
 | `GET` | `/api/timeslots/:serviceId` | Public | Get all available slots for a service (optional `?date=`) |
 | `POST` | `/api/timeslots` | Provider only | Add a new available time slot |
-| `DELETE` | `/api/timeslots/:id` | Provider (owner) | Remove an available time slot |
+| `DELETE` | `/api/timeslots/:id` | Provider (owner) | Remove a specific time slot by its ID |
 
 ### Bookings — `/api/bookings`
 
@@ -428,34 +406,26 @@ All API endpoints are prefixed with `/api`. Responses are in JSON format.
 
 ## Security Practices
 
-The following security measures are implemented throughout the application, consistent with CP476B course material:
-
-- **Password Hashing:** All passwords are hashed using `bcryptjs` with a salt round of 12 before being stored. Plain-text passwords are never saved to the database.
-
-- **SQL Injection Prevention:** All database queries use parameterized prepared statements via the `mysql2` driver. Raw string concatenation with user input is never used in any query.
-
-- **XSS Prevention:** All user-supplied content is escaped before being inserted into the DOM. `textContent` is used instead of `innerHTML` when injecting user data on the client side. The `htmlspecialchars` equivalent is applied when echoing user data into HTML on the server side.
-
-- **Session Security:** Sessions are managed server-side using `express-session`. Cookies are configured with `httpOnly: true` (prevents JavaScript access), `sameSite: 'strict'` (prevents CSRF), and `secure: true` in production (HTTPS only).
-
-- **Authorization Checks:** Every protected endpoint verifies the authenticated user's role and ownership before performing any operation. A provider cannot modify another provider's service listing; a customer cannot cancel another customer's booking.
-
-- **Input Validation:** All form inputs are validated on both the client side (JavaScript, for immediate feedback) and the server side (Express route handlers, for security). Client-side validation alone is never considered sufficient.
+- **SQL Injection Prevention:** All database interactions go through the Supabase client, which uses parameterized queries internally. Raw string concatenation with user input is never used.
+- **XSS Prevention:** React's JSX escapes output by default. `dangerouslySetInnerHTML` is never used with user-generated content.
+- **Session Security:** Cookies are configured with `httpOnly: true`, `sameSite: 'strict'`, and `secure: true` in production.
+- **Environment Variable Separation:** The Supabase service role key is kept strictly server-side. Only the public anon key is used in client-side code.
+- **Authorization Checks:** Every protected API route verifies the authenticated user's role and ownership before performing any operation.
+- **Input Validation:** All inputs are validated both client-side (for immediate feedback) and server-side (for security).
 
 ---
 
 ## Testing
 
-Test cases and results are documented in `tests/test-plan.md` and the full testing summary report is in `docs/milestone-03/`.
+Test cases and results are documented in `tests/test-plan.md`. The full testing summary report is in `docs/milestone-03/`.
 
-**To run automated tests** (if configured):
+**Run automated tests:**
 
 ```bash
-cd backend
 npm test
 ```
 
-**Manual testing** covers the following areas:
+**Manual testing covers:**
 
 | Area | Example Test Cases |
 |---|---|
@@ -470,44 +440,8 @@ npm test
 
 ## Project Management
 
-- **GitHub Kanban Board:** [Insert GitHub Projects URL here]
-- **Activity Blog / Wiki:** [Insert GitHub Wiki URL here]
-
-The Kanban board maintains five columns throughout development:
-
-```
-Backlog → Ready → In Progress → In Review → Done
-```
-
-All team members are responsible for moving their own cards and keeping the board current. Individual contribution is assessed via commit history quality and Kanban card activity.
-
----
-
-## Milestones
-
-| Milestone | Focus | Weight | Due |
-|---|---|---|---|
-| **M1** | Project Planning and Design | 5% | As per MyLS announcement |
-| **M2** | Front-End Implementation and Database Design | 7% | As per MyLS announcement |
-| **M3** | Full-Stack Integration, Testing, and Demo | 8% | As per MyLS announcement |
-
-Each milestone is submitted as a ZIP file to the corresponding MyLS Dropbox folder, containing all required PDFs, this README, and a `links.txt` file with the GitHub repository URL, Kanban board URL, and Wiki/docs URL.
-
----
-
-## Contributing
-
-All contributions must be made through GitHub. The following workflow applies to all team members:
-
-1. **Assign yourself** to a Kanban card in the *Ready* column before starting work.
-2. **Create a branch** for your feature or fix using the naming convention: `feature/story-id-short-description` (e.g., `feature/AUTH-1-customer-registration`).
-3. **Commit frequently** with clear, descriptive messages (e.g., `AUTH-1: Add registration form validation and POST route`).
-4. **Open a Pull Request** when the feature is complete and move the Kanban card to *In Review*.
-5. **Request a review** from at least one team member before merging.
-6. **Merge to `main`** only after the review is approved and all acceptance criteria are confirmed.
-7. **Move the Kanban card** to *Done* after the merge.
-
-> Individual grades may be adjusted based on GitHub commit history, Kanban card activity, and Wiki documentation. Ensure your contributions are visible and consistent throughout all three milestones.
+- **GitHub Kanban Board:** [https://github.com/users/JeffVu-1/projects/3](https://github.com/users/JeffVu-1/projects/3)
+- **Activity Blog / Wiki:** [https://github.com/JeffVu-1/CP476/wiki](https://github.com/JeffVu-1/CP476/wiki)
 
 ---
 
