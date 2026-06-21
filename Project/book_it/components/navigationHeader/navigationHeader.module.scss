@@ -1,0 +1,77 @@
+.header {
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    position: fixed;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 56px;
+}
+
+.logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111;
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+}
+
+.logoAccent {
+    font-style: italic;
+}
+
+.navLinks {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li a {
+        font-size: 0.9rem;
+        color: #374151;
+        text-decoration: none;
+
+        &:hover {
+            color: #111;
+        }
+    }
+}
+
+.authButtons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.loginLink {
+    font-size: 0.9rem;
+    color: #374151;
+    text-decoration: none;
+
+    &:hover {
+        color: #111;
+    }
+}
+
+.signupButton {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #fff;
+    background-color: #111;
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+
+    &:hover {
+        background-color: #333;
+    }
+}

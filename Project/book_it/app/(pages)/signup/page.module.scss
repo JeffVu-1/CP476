@@ -1,0 +1,149 @@
+.page {
+    display: grid; 
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+}
+
+.left {
+    flex: 1;
+    background: #f3f4f6;
+    padding: 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    span { font-style: italic; }
+}
+
+.copy {
+    h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 16px;
+    }
+    p { color: #6b7280; margin-bottom: 24px; }
+}
+
+.perks {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: #374151;
+}
+
+.testimonial {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.right {
+    flex: 1;
+    padding: 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 480px;
+
+    h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+}
+
+.loginPrompt {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 24px;
+    a { color: #111; font-weight: 500; }
+}
+
+.tabs {
+    display: flex;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 24px;
+
+    button {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        background: #f3f4f6;
+        cursor: pointer;
+        font-size: 0.875rem;
+    }
+}
+
+.active {
+    background: #fff !important;
+    font-weight: 500;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 16px;
+
+    label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    input {
+        padding: 10px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        outline: none;
+        &:focus { border-color: #111; }
+    }
+}
+
+.submit {
+    padding: 12px;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    &:hover { background: #333; }
+}
+
+.divider {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin: 12px 0;
+}
+
+.oauth {
+    width: 100%;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    margin-bottom: 8px;
+    &:hover { background: #f9fafb; }
+}
+
+.terms {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-top: 12px;
+}
