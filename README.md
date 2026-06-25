@@ -120,95 +120,56 @@ Once a customer finds a service, they can view details, select a date, choose an
 
 ```
 book-it/
-├── README.md                        ← This file
-├── links.txt                        ← GitHub repo, Kanban board, and Wiki URLs
+├── README.md                        ← This file (in parent CP476/ directory)
 ├── .gitignore
-├── next.config.js                   ← Next.js configuration
+├── jsconfig.json
+├── next.config.mjs                  ← Next.js configuration
 ├── package.json
 ├── package-lock.json
 │
-├── docs/
-│   ├── milestone-01/                ← M1 proposal, wireframes, user stories
-│   ├── milestone-02/                ← M2 ER diagram, SQL schema, front-end screenshots
-│   └── milestone-03/                ← M3 testing report, demo video link, slides
-│
-├── public/                          ← Static assets (images, icons, fonts)
-│
-├── src/
-│   ├── app/                         ← Next.js App Router pages and layouts
-│   │   ├── layout.js                ← Root layout (shared header/footer)
+├── app/                             ← Next.js App Router root
+│   ├── layout.js                    ← Root layout (wraps all pages with nav)
+│   ├── globals.scss                 ← Global stylesheet
+│   │
+│   ├── (home)/
 │   │   ├── page.js                  ← Homepage (category grid + search bar)
-│   │   ├── globals.css              ← Global stylesheet
-│   │   │
+│   │   └── page.module.scss
+│   │
+│   ├── (pages)/                     ← Route group for secondary pages
+│   │   ├── browse/
+│   │   │   ├── page.js              ← Browse / search results listing
+│   │   │   └── page.module.scss
+│   │   ├── categories/
+│   │   │   ├── page.js              ← Category overview page
+│   │   │   └── page.module.scss
+│   │   ├── for-business/
+│   │   │   ├── page.js              ← Provider landing / info page
+│   │   │   └── page.module.scss
 │   │   ├── login/
-│   │   │   └── page.js
-│   │   ├── register/
-│   │   │   └── page.js
-│   │   ├── services/
-│   │   │   ├── page.js              ← Category / search results listing
-│   │   │   └── [id]/
-│   │   │       └── page.js          ← Individual service detail + reviews
-│   │   ├── book/
-│   │   │   └── [serviceId]/
-│   │   │       └── page.js          ← Booking form (date + slot picker)
-│   │   ├── booking-confirmation/
-│   │   │   └── page.js
-│   │   ├── dashboard/
-│   │   │   ├── customer/
-│   │   │   │   └── page.js          ← Customer dashboard
-│   │   │   └── provider/
-│   │   │       └── page.js          ← Provider dashboard
-│   │   ├── create-service/
-│   │   │   └── page.js
-│   │   ├── edit-service/
-│   │   │   └── [id]/
-│   │   │       └── page.js
-│   │   └── manage-availability/
-│   │       └── page.js
+│   │   │   ├── page.js
+│   │   │   └── page.module.scss
+│   │   └── signup/
+│   │       ├── page.js
+│   │       └── page.module.scss
 │   │
 │   └── api/                         ← Next.js API Routes (back-end endpoints)
-│       ├── auth/
-│       │   ├── register/
-│       │   │   └── route.js         ← POST /api/auth/register
-│       │   ├── login/
-│       │   │   └── route.js         ← POST /api/auth/login
-│       │   └── logout/
-│       │       └── route.js         ← POST /api/auth/logout
-│       ├── services/
-│       │   ├── route.js             ← GET, POST /api/services
-│       │   └── [id]/
-│       │       └── route.js         ← GET, PUT, DELETE /api/services/:id
-│       ├── timeslots/
-│       │   ├── route.js             ← POST /api/timeslots
-│       │   └── [serviceId]/
-│       │       └── route.js         ← GET, DELETE /api/timeslots/:serviceId
-│       ├── bookings/
-│       │   ├── route.js             ← POST /api/bookings
-│       │   ├── customer/
-│       │   │   └── route.js         ← GET /api/bookings/customer
-│       │   ├── provider/
-│       │   │   └── route.js         ← GET /api/bookings/provider
-│       │   └── [id]/
-│       │       ├── cancel/
-│       │       │   └── route.js     ← PATCH /api/bookings/:id/cancel
-│       │       └── status/
-│       │           └── route.js     ← PATCH /api/bookings/:id/status
-│       └── reviews/
-│           ├── route.js             ← POST /api/reviews
-│           └── [serviceId]/
-│               └── route.js         ← GET /api/reviews/:serviceId
+│       └── categories/
+│           └── route.js             ← GET /api/categories
 │
-├── lib/
-│   ├── supabase.js                  ← Supabase client initialization
-│   ├── auth.js                      ← Session/auth helper utilities
-│   └── db/
-│       └── schema.sql               ← All CREATE TABLE statements
+├── components/                      ← Shared React components
+│   ├── categoryGrid/
+│   │   ├── categoryGrid.js
+│   │   └── categoryGrid.module.scss
+│   ├── navigationHeader/
+│   │   ├── navigationHeader.js
+│   │   ├── navigationHeader.module.scss
+│   │   └── ConditionalNav.js        ← Hides nav on login/signup pages
+│   └── searchBar/
+│       ├── searchBar.js
+│       └── searchBar.module.scss
 │
-└── tests/
-    ├── auth.test.js
-    ├── services.test.js
-    ├── bookings.test.js
-    └── test-plan.md                 ← Manual test cases and results
+└── lib/
+    └── supabase.js                  ← Supabase client initialization
 ```
 
 ---
