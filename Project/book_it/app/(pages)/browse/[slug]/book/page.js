@@ -111,10 +111,11 @@ export default function BookDatePage() {
 
   function handleContinue() {
     if (!selTime) return;
-    const dd  = String(selDate.d).padStart(2, "0");
-    const mm  = String(selDate.m + 1).padStart(2, "0");
+    const bookingId = `${selDate.y}${String(selDate.m + 1).padStart(2, "0")}${String(selDate.d).padStart(2, "0")}`;
+    const dd = String(selDate.d).padStart(2, "0");
+    const mm = String(selDate.m + 1).padStart(2, "0");
     router.push(
-      `/browse/${params.slug}/book/confirm?date=${selDate.y}-${mm}-${dd}&time=${encodeURIComponent(selTime)}`
+      `/bookings/${bookingId}?slug=${params.slug}&date=${selDate.y}-${mm}-${dd}&time=${encodeURIComponent(selTime)}`
     );
   }
 

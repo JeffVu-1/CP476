@@ -1,25 +1,47 @@
+"use client";
+
 import Link from "next/link";
+import { Suspense } from "react";
+import { useParams, useSearchParams } from "next/navigation";
+import { BUSINESSES } from "@/lib/data";
 import "./booking-confirmation.scss";
 
-export default function BookingConfirmationPage({ params }) {
-  const bookingId = params.id;
+export default function BookingConfirmationPage() {
+  return (
+    <Suspense>
+      <ConfirmationContent />
+    </Suspense>
+  );
+}
+
+function ConfirmationContent() {
+  const { id }       = useParams();
+  const searchParams = useSearchParams();
+  const slug         = searchParams.get("slug");
+  const dateParam    = searchParams.get("date");
+  const timeParam    = searchParams.get("time");
+
+  const business = BUSINESSES.find(b => b.id === slug);
+
+  const formattedDate = dateParam
+    ? new Date(dateParam + "T12:00:00").toLocaleDateString("en-US", {
+        weekday: "short", month: "long", day: "numeric", year: "numeric",
+      })
+    : "—";
+
+  const service = business?.services?.[0];
 
   return (
     <main className="booking-page">
       <header className="booking-header">
-        <Link href="/" className="booking-logo">
-          Book <span>it.</span>
-        </Link>
-
+        <Link href="/" className="booking-logo">Book <span>it.</span></Link>
         <nav className="booking-nav">
           <Link href="/browse" className="active">Browse</Link>
           <Link href="/categories">Categories</Link>
-          <Link href="/business">For Business</Link>
+          <Link href="/for-business">For Business</Link>
         </nav>
-
         <div className="booking-header-right">
-          <Link href="/bookings">Bookings</Link>
-          <div className="user-circle">JD</div>
+          <div className="user-circle">✓</div>
         </div>
       </header>
 
@@ -29,16 +51,17 @@ export default function BookingConfirmationPage({ params }) {
         <h1>You&apos;re booked!</h1>
 
         <p className="confirmation-subtitle">
-          Confirmation #{bookingId ? `BK-${bookingId}` : "BK-8821"} · Sent to your email
+          Confirmation #BK-{id} · Sent to your email
         </p>
 
         <section className="booking-card">
           <div className="business-row">
-            <div className="logo-box">Logo</div>
-
+            <div className="logo-box">
+              {business ? business.name.slice(0, 2).toUpperCase() : "?"}
+            </div>
             <div>
-              <h2>Acme Plumbing Co.</h2>
-              <p>Leak diagnosis &amp; repair</p>
+              <h2>{business ? business.name : "Business"}</h2>
+              <p>{service ? service.name : business?.tagline ?? "Service"}</p>
             </div>
           </div>
 
@@ -47,22 +70,21 @@ export default function BookingConfirmationPage({ params }) {
           <div className="booking-details-grid">
             <div>
               <p className="detail-label">Date</p>
-              <p className="detail-value">Mon, May 18, 2026</p>
+              <p className="detail-value">{formattedDate}</p>
             </div>
-
             <div>
               <p className="detail-label">Time</p>
-              <p className="detail-value">10:00 AM – 10:45 AM</p>
+              <p className="detail-value">{timeParam ?? "—"}</p>
             </div>
-
             <div>
-              <p className="detail-label">Address</p>
-              <p className="detail-value">224 Atlantic Ave, Brooklyn NY</p>
+              <p className="detail-label">Location</p>
+              <p className="detail-value">{business?.location ?? "—"}</p>
             </div>
-
             <div>
               <p className="detail-label">Price</p>
-              <p className="detail-value">$95 · pay on site</p>
+              <p className="detail-value">
+                {service ? `${service.price} · pay on site` : business ? `From $${business.fromPrice}` : "—"}
+              </p>
             </div>
           </div>
         </section>
@@ -77,8 +99,8 @@ export default function BookingConfirmationPage({ params }) {
           Need to change something? Modify up to 24h before.
         </p>
 
-        <Link href="/bookings" className="all-bookings-link">
-          View all my bookings →
+        <Link href="/browse" className="all-bookings-link">
+          ← Back to browse
         </Link>
       </section>
     </main>
