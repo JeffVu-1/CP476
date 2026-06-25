@@ -36,8 +36,6 @@ export default function RegistrationPage() {
                     <label>Password<input type="password" placeholder="••••••••" /></label>
                     <button type="submit" className={s.submit}>Create account</button>
                 </form>
-
-                <p className={s.terms}>By signing up, you agree to our Terms of Service and Privacy Policy.</p>
             </div>
         </div>
     )

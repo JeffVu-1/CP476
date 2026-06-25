@@ -103,24 +103,7 @@ export default function LoginPage() {
                     <button type="submit" className={s.submit} disabled={loading}>
                         {loading ? "Logging in…" : "Log in"}
                     </button>
-                </form>
-
-                <div className={s.divider}><span>OR</span></div>
-
-                <div className={s.oauthGroup}>
-                    <button type="button" className={s.oauthBtn} onClick={handleGoogle}>
-                        Continue with Google
-                    </button>
-                    <button type="button" className={s.oauthBtn} onClick={handleApple}>
-                        Continue with Apple
-                    </button>
-                </div>
-
-                <p className={s.terms}>
-                    By signing in, you agree to our{" "}
-                    <Link href="#">Terms of Service</Link> and{" "}
-                    <Link href="#">Privacy Policy</Link>.
-                </p>
+                </form>       
             </div>
         </div>
     )

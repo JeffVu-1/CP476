@@ -1,0 +1,243 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family: var(--font-geist-sans, sans-serif);
+  background: #fff;
+}
+
+/* ── Nav ─────────────────────────────────── */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 0 1.5rem;
+  height: 52px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.logo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  em {
+    font-style: normal;
+    color: #111;
+  }
+}
+
+.navLinks {
+  display: flex;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.navLink {
+  font-size: 0.875rem;
+  color: #6b7280;
+  text-decoration: none;
+  padding-bottom: 2px;
+  &:hover { color: #111; }
+}
+
+.active {
+  color: #111;
+  font-weight: 600;
+  border-bottom: 2px solid #111;
+}
+
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.bookingsBtn {
+  font-size: 0.8125rem;
+  padding: 0.3rem 0.85rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  &:hover { background: #f9fafb; }
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #111;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Toolbar ─────────────────────────────── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1.25rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.toolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.todayBtn {
+  font-size: 0.8125rem;
+  padding: 0.3rem 0.85rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  &:hover { background: #f9fafb; }
+}
+
+.arrowBtn {
+  font-size: 1.2rem;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  &:hover { background: #f9fafb; }
+}
+
+.weekRange {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin-left: 0.25rem;
+}
+
+.viewToggle {
+  display: flex;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.viewBtn {
+  font-size: 0.8125rem;
+  padding: 0.3rem 0.75rem;
+  background: #fff;
+  border: none;
+  border-right: 1px solid #d1d5db;
+  cursor: pointer;
+  &:last-child { border-right: none; }
+  &:hover { background: #f9fafb; }
+}
+
+.viewBtnActive {
+  background: #111;
+  color: #fff;
+  &:hover { background: #111; }
+}
+
+.newBtn {
+  font-size: 0.8125rem;
+  padding: 0.3rem 0.85rem;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  &:hover { background: #374151; }
+}
+
+/* ── Calendar Grid ───────────────────────── */
+.grid {
+  flex: 1;
+  display: grid;
+  /* 1 time col + 5 day cols */
+  grid-template-columns: 52px repeat(5, 1fr);
+  /* 1 header row + 10 hour rows */
+  grid-template-rows: 44px repeat(10, 64px);
+  overflow-y: auto;
+  border-top: 1px solid #e5e7eb;
+}
+
+.cornerCell {
+  grid-column: 1;
+  grid-row: 1;
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fff;
+}
+
+.dayHeader {
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fff;
+}
+
+.dayName {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.todayHeader .dayName {
+  color: #111;
+}
+
+.todayBadge {
+  font-size: 0.6875rem;
+  color: #6b7280;
+}
+
+.timeCell {
+  grid-column: 1;
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.35rem 0.5rem 0 0;
+  text-align: right;
+  font-size: 0.6875rem;
+  color: #9ca3af;
+  background: #fff;
+}
+
+.cell {
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  position: relative;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.booking {
+  background: #111;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  /* span multiple rows via height = duration * row-height */
+  height: calc(var(--duration, 1) * 64px - 8px);
+  overflow: hidden;
+  cursor: pointer;
+  &:hover { background: #374151; }
+}

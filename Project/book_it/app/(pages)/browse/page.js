@@ -2,70 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { BUSINESSES } from "@/lib/data";
 import s from "./page.module.scss";
-
-const services = [
-  {
-    id: 1,
-    title: "Leak Diagnosis & Repair",
-    provider: "Acme Plumbing Co.",
-    category: "Plumbing",
-    price: 95,
-    mode: "In-person",
-    rating: 4.8,
-    location: "Waterloo, ON",
-  },
-  {
-    id: 2,
-    title: "Full Pet Grooming",
-    provider: "Pawsh Pet Salon",
-    category: "Pet grooming",
-    price: 75,
-    mode: "In-person",
-    rating: 4.7,
-    location: "Kitchener, ON",
-  },
-  {
-    id: 3,
-    title: "Home Cleaning",
-    provider: "Sparkle Home Services",
-    category: "Cleaning",
-    price: 120,
-    mode: "In-person",
-    rating: 4.6,
-    location: "Waterloo, ON",
-  },
-  {
-    id: 4,
-    title: "Math Tutoring",
-    provider: "BrightPath Tutors",
-    category: "Tutoring",
-    price: 40,
-    mode: "Online",
-    rating: 4.9,
-    location: "Online",
-  },
-  {
-    id: 5,
-    title: "Portrait Photography",
-    provider: "Frame Studio",
-    category: "Photography",
-    price: 150,
-    mode: "In-person",
-    rating: 4.5,
-    location: "Waterloo, ON",
-  },
-  {
-    id: 6,
-    title: "Personal Training Session",
-    provider: "FitLife Coaching",
-    category: "Fitness Training",
-    price: 60,
-    mode: "Hybrid",
-    rating: 4.7,
-    location: "Kitchener, ON",
-  },
-];
 
 const categories = [
   "All",
@@ -82,16 +20,16 @@ export default function BrowsePage() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const filteredServices = services.filter((service) => {
+  const filteredServices = BUSINESSES.filter((b) => {
     const searchText = search.toLowerCase();
 
     const matchesSearch =
-      service.title.toLowerCase().includes(searchText) ||
-      service.provider.toLowerCase().includes(searchText) ||
-      service.category.toLowerCase().includes(searchText);
+      b.tagline.toLowerCase().includes(searchText) ||
+      b.name.toLowerCase().includes(searchText) ||
+      b.category.toLowerCase().includes(searchText);
 
     const matchesCategory =
-      selectedCategory === "All" || service.category === selectedCategory;
+      selectedCategory === "All" || b.category === selectedCategory;
 
     return matchesSearch && matchesCategory;
   });
@@ -170,22 +108,22 @@ export default function BrowsePage() {
             </p>
           ) : (
             <div className={s.grid}>
-              {filteredServices.map((service) => (
-                <article key={service.id} className={s.card}>
+              {filteredServices.map((b) => (
+                <article key={b.id} className={s.card}>
                   <div className={s.coverPhoto}>cover photo</div>
 
                   <div className={s.cardBody}>
-                    <h2>{service.provider}</h2>
-                    <p>{service.title}</p>
+                    <h2>{b.name}</h2>
+                    <p>{b.tagline}</p>
                     <p>
-                      {service.category} · ${service.price} · {service.mode}
+                      {b.category} · ${b.price} · {b.mode}
                     </p>
                     <p>
-                      ★ {service.rating} · {service.location}
+                      ★ {b.rating} · {b.location}
                     </p>
 
-                    <Link href={`/browse/${service.id}`} className={s.detailsLink}>
-                      View Details →
+                    <Link href={`/browse/${b.id}`} className={s.detailsLink}>
+                      View Details
                     </Link>
                   </div>
                 </article>

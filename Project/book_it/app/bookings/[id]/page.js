@@ -1,5 +1,5 @@
 import Link from "next/link";
-import "./booking-confirmation.css";
+import "./booking-confirmation.scss";
 
 export default function BookingConfirmationPage({ params }) {
   const bookingId = params.id;
