@@ -149,7 +149,7 @@ export default function BusinessProfilePage() {
                 Next available: <strong>{b.nextAvailable}</strong>
               </p>
               <Link
-                href={`/booking/new?business=${params.slug}`}
+                href={`/browse/${params.slug}/book`}
                 className={s.bookBtn}
               >
                 Book Now
