@@ -2,7 +2,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { getSupabaseBrowser } from "@/lib/supabaseBrowser"
+import { getSupabaseBrowser } from "@/lib/supabase"
 import s from "./page.module.scss"
 
 export default function LoginPage() {
@@ -61,9 +61,9 @@ export default function LoginPage() {
                     <h1>Get appointments<br />at your fingertips.</h1>
                     <p>Join thousands of customers who book plumbers, groomers, cleaners, and more — all from one place.</p>
                     <ul className={s.perks}>
-                        >⊙ Real-time availability</li>
-                        >⊙ Free cancellation up to 24h</li>
-                        >⊙ One profile, every service</li>
+                        <li>⊙ Real-time availability</li>
+                        <li>⊙ Free cancellation up to 24h</li>
+                        <li>⊙ One profile, every service</li>
                     </ul>
                 </div>
 
@@ -80,7 +80,7 @@ export default function LoginPage() {
                 {error && <p className={s.error}>{error}</p>}
 
                 <form className={s.form} onSubmit={handleSubmit}>
-                    abel>
+                    <label>
                         Email
                         <input
                             type="email"
@@ -90,7 +90,7 @@ export default function LoginPage() {
                             required
                         />
                     </label>
-                    abel>
+                    <label>
                         Password
                         <input
                             type="password"
