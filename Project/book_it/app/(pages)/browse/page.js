@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { BUSINESSES } from "@/lib/data";
 import s from "./page.module.scss";
 
@@ -17,8 +18,14 @@ const categories = [
 ];
 
 export default function BrowsePage() {
-  const [search, setSearch] = useState("");
+  const searchParams = useSearchParams()
+  const [search, setSearch] = useState(searchParams.get("q") ?? "");
   const [selectedCategory, setSelectedCategory] = useState("All");
+
+  useEffect(() => {
+    const q = searchParams.get("q")
+    if (q) setSearch(q)
+  }, [searchParams]);
 
   const filteredServices = BUSINESSES.filter((b) => {
     const searchText = search.toLowerCase();

@@ -2,7 +2,8 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { getSupabaseBrowser } from "@/lib/supabase"
+import axios from "axios"
+import { setUser } from "@/lib/auth"
 import s from "./page.module.scss"
 
 export default function LoginPage() {
@@ -17,38 +18,14 @@ export default function LoginPage() {
         setError("")
         setLoading(true)
 
-        const supabase = getSupabaseBrowser()
-        const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password })
-
-        if (authError) {
-            setError(authError.message)
+        try {
+            const { data } = await axios.post("/api/auth/login", { email, password })
+            setUser(data)
+            router.push(data.role === "provider" ? "/business/dashboard" : "/browse")
+        } catch (err) {
+            setError(err.response?.data?.error || "Login failed")
             setLoading(false)
-            return
         }
-
-        const { data: profile } = await supabase
-            .from("users")
-            .select("role")
-            .eq("id", data.user.id)
-            .single()
-
-        router.push(profile?.role === "provider" ? "/dashboard/provider" : "/dashboard/customer")
-    }
-
-    async function handleGoogle() {
-        const supabase = getSupabaseBrowser()
-        await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: { redirectTo: `${window.location.origin}/auth/callback` },
-        })
-    }
-
-    async function handleApple() {
-        const supabase = getSupabaseBrowser()
-        await supabase.auth.signInWithOAuth({
-            provider: "apple",
-            options: { redirectTo: `${window.location.origin}/auth/callback` },
-        })
     }
 
     return (
@@ -59,15 +36,10 @@ export default function LoginPage() {
 
                 <div className={s.copy}>
                     <h1>Get appointments<br />at your fingertips.</h1>
-                    <p>Join thousands of customers who book plumbers, groomers, cleaners, and more — all from one place.</p>
-                    <ul className={s.perks}>
-                        <li>⊙ Real-time availability</li>
-                        <li>⊙ Free cancellation up to 24h</li>
-                        <li>⊙ One profile, every service</li>
-                    </ul>
+                    <p>Login to preview thousands of plumbers, groomers, cleaners, and more all from one place.</p>
                 </div>
 
-                <p className={s.testimonial}>&ldquo;Booked a plumber in 30 seconds.&rdquo; — Sarah K.</p>
+                <p className={s.testimonial}></p>
             </div>
 
             {/* ── RIGHT ── */}

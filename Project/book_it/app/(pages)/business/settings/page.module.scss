@@ -1,0 +1,763 @@
+.shell {
+  width: 680px;
+  margin: 0 auto;
+  padding: 80px 24px 80px;
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #171717;
+  box-sizing: border-box;
+
+  @media (max-width: 728px) {
+    width: 100%;
+  }
+}
+
+// ─── Toast ─────────────────────────────────────────────────────────────────────
+
+.toast {
+  position: fixed;
+  top: 72px;
+  right: 24px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  animation: slideIn 0.2s ease;
+}
+
+.success { background: #171717; color: #fff; }
+.error   { background: #dc2626; color: #fff; }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── List view ─────────────────────────────────────────────────────────────────
+
+.listHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.subheading {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+}
+
+.addServiceBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #171717;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover { background: #333; }
+}
+
+.serviceCardList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.serviceListCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 16px 18px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    border-color: #aaa;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+}
+
+.serviceCardInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.serviceCardTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #171717;
+  margin: 0 0 5px;
+}
+
+.serviceCardMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.78rem;
+  color: #888;
+  margin: 0;
+  flex-wrap: wrap;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+}
+
+.serviceCardEdit {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #555;
+  flex-shrink: 0;
+  background: #f5f5f5;
+  border-radius: 6px;
+  padding: 6px 12px;
+
+  .serviceListCard:hover & { background: #ececec; color: #171717; }
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 60px 24px;
+  gap: 10px;
+  border: 1.5px dashed #d1d5db;
+  border-radius: 12px;
+  margin-bottom: 32px;
+}
+
+.emptyTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.emptyBody {
+  font-size: 0.875rem;
+  color: #888;
+  margin: 0 0 8px;
+}
+
+.listFooter {
+  margin-top: 8px;
+}
+
+// ─── Wizard header ─────────────────────────────────────────────────────────────
+
+.wizardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.wizardBackLink {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.82rem;
+  color: #888;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+
+  &:hover { color: #171717; }
+}
+
+.wizardServiceName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #171717;
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &::before {
+    content: "/";
+    margin-right: 10px;
+    color: #d1d5db;
+    font-weight: 400;
+  }
+}
+
+// ─── Stepper ───────────────────────────────────────────────────────────────────
+
+.stepperWrapper {
+  margin-bottom: 36px;
+}
+
+.stepper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.stepItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  flex: 1;
+}
+
+.stepLine {
+  position: absolute;
+  top: 14px;
+  right: 50%;
+  width: 100%;
+  height: 1px;
+  background: #d1d5db;
+  z-index: 0;
+}
+
+.stepLineDone { background: #171717; }
+
+.stepCircle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  color: #aaa;
+  font-size: 0.78rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.stepDone   { background: #171717; border-color: #171717; color: #fff; }
+.stepActive { background: #171717; border-color: #171717; color: #fff; }
+
+.stepLabel {
+  font-size: 0.7rem;
+  color: #aaa;
+  margin-top: 6px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.stepLabelActive { color: #171717; font-weight: 600; }
+
+// ─── Page header (wizard) ──────────────────────────────────────────────────────
+
+.pageHeader {
+  margin-bottom: 24px;
+}
+
+// ─── Step 1 — Details form ────────────────────────────────────────────────────
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 8px;
+
+  @media (max-width: 520px) { grid-template-columns: 1fr; }
+}
+
+.fieldLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #171717;
+
+  > span:first-child { display: block; }
+}
+
+.req      { color: #888; font-weight: 400; }
+.optional { color: #aaa; font-weight: 400; font-size: 0.78rem; }
+
+.fieldInput {
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.875rem;
+  color: #171717;
+  outline: none;
+  font-family: inherit;
+
+  &:focus        { border-color: #aaa; }
+  &::placeholder { color: #bbb; }
+}
+
+.fieldSelect {
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.875rem;
+  color: #171717;
+  background: #fff;
+  outline: none;
+  cursor: pointer;
+
+  &:focus { border-color: #aaa; }
+}
+
+.fieldTextarea {
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.875rem;
+  color: #171717;
+  resize: vertical;
+  outline: none;
+  font-family: inherit;
+  line-height: 1.5;
+
+  &:focus        { border-color: #aaa; }
+  &::placeholder { color: #bbb; }
+}
+
+.durationWrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  overflow: hidden;
+
+  &:focus-within { border-color: #aaa; }
+}
+
+.durationInput {
+  border: none;
+  outline: none;
+  padding: 10px 6px 10px 12px;
+  font-size: 0.875rem;
+  flex: 1;
+  color: #171717;
+  background: transparent;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button { -webkit-appearance: none; }
+  -moz-appearance: textfield;
+  &::placeholder { color: #bbb; }
+}
+
+.durationUnit {
+  padding-right: 12px;
+  font-size: 0.82rem;
+  color: #999;
+  user-select: none;
+}
+
+.priceWrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  overflow: hidden;
+
+  &:focus-within { border-color: #aaa; }
+}
+
+.priceDollar {
+  padding: 0 4px 0 12px;
+  font-size: 0.875rem;
+  color: #999;
+  user-select: none;
+}
+
+.priceInput {
+  border: none;
+  outline: none;
+  padding: 10px 12px 10px 0;
+  font-size: 0.875rem;
+  flex: 1;
+  color: #171717;
+  background: transparent;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button { -webkit-appearance: none; }
+  -moz-appearance: textfield;
+  &::placeholder { color: #bbb; }
+}
+
+// ─── Step 2 — Hours ───────────────────────────────────────────────────────────
+
+.hoursList {
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.dayRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  gap: 16px;
+
+  &:last-child { border-bottom: none; }
+}
+
+.dayRowClosed { background: #fafafa; }
+
+.dayToggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggleInput { display: none; }
+
+.toggleTrack {
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  background: #d1d5db;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.toggleThumbOn {
+  transform: translateX(16px);
+}
+
+// Drive track color via JS class on the row instead of CSS sibling hack
+.dayRow:not(.dayRowClosed) .toggleTrack { background: #171717; }
+
+.dayName {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #171717;
+  min-width: 90px;
+
+  .dayRowClosed & { color: #aaa; }
+}
+
+.timeRange {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timeInput {
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-size: 0.82rem;
+  color: #171717;
+  outline: none;
+
+  &:focus { border-color: #aaa; }
+}
+
+.timeSep { color: #aaa; font-size: 0.875rem; }
+
+.closedLabel { font-size: 0.82rem; color: #bbb; }
+
+// ─── Step 3 — Photos ──────────────────────────────────────────────────────────
+
+.dropZone {
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  margin-bottom: 20px;
+
+  &:hover { border-color: #888; background: #fafafa; }
+}
+
+.uploadIcon { color: #aaa; margin-bottom: 12px; }
+
+.dropTitle {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #444;
+  margin: 0 0 4px;
+
+  span { color: #171717; text-decoration: underline; }
+}
+
+.dropSub { font-size: 0.78rem; color: #aaa; margin: 0; }
+
+.hiddenInput { display: none; }
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.photoThumb {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5e5e5;
+
+  img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  &:hover .photoRemove { opacity: 1; }
+}
+
+.photoRemove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.addPhotoTile {
+  aspect-ratio: 1;
+  border: 1.5px dashed #d1d5db;
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #aaa;
+  font-size: 0.78rem;
+
+  &:hover { border-color: #888; color: #555; }
+}
+
+// ─── Step 4 — Save / Summary ──────────────────────────────────────────────────
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 28px;
+
+  @media (max-width: 480px) { grid-template-columns: 1fr; }
+}
+
+.summaryCard {
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 16px 18px;
+  background: #fff;
+}
+
+.summaryLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 6px;
+}
+
+.summaryValue {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #171717;
+  margin: 0 0 4px;
+}
+
+.summaryMeta {
+  font-size: 0.78rem;
+  color: #888;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.empty { color: #bbb; font-weight: 400; font-size: 0.875rem; }
+
+.publishBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background: #171717;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover { background: #333; }
+}
+
+.publishSuccess {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 48px 0;
+  gap: 12px;
+}
+
+.publishCheckCircle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #171717;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.publishSuccessTitle { font-size: 1.5rem; font-weight: 700; margin: 0; }
+
+.publishSuccessBody { font-size: 0.9rem; color: #666; margin: 0; max-width: 320px; }
+
+.backToListBtn {
+  margin-top: 8px;
+  background: #171717;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover { background: #333; }
+}
+
+// ─── Shared: Tip ──────────────────────────────────────────────────────────────
+
+.tip {
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-top: 20px;
+  background: #fafafa;
+}
+
+.tipTitle {
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #171717;
+}
+
+.tipBody {
+  font-size: 0.82rem;
+  color: #555;
+  margin: 0;
+  line-height: 1.5;
+}
+
+// ─── Footer nav ───────────────────────────────────────────────────────────────
+
+.footer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 0.875rem;
+  color: #171717;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover { border-color: #888; }
+}
+
+.footerSpacer { flex: 1; }
+
+.nextBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #171717;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover { background: #333; }
+}

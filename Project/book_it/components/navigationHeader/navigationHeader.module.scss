@@ -52,6 +52,107 @@
     gap: 12px;
 }
 
+.profileWrapper {
+    position: relative;
+}
+
+.avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #111;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        background: #333;
+    }
+}
+
+.dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    padding: 14px 16px 10px;
+    min-width: 200px;
+    z-index: 200;
+}
+
+.dropdownName {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #111;
+    margin: 0 0 2px;
+}
+
+.dropdownEmail {
+    font-size: 0.78rem;
+    color: #888;
+    margin: 0;
+}
+
+.dropdownDivider {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 10px 0;
+}
+
+.bookingsBtn {
+    background: none;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    color: #374151;
+
+    &:hover { border-color: #888; }
+}
+
+.dropdownRole {
+    font-size: 0.72rem;
+    color: #bbb;
+    margin: 2px 0 0;
+    text-transform: capitalize;
+}
+
+.dropdownLink {
+    display: block;
+    font-size: 0.875rem;
+    color: #374151;
+    text-decoration: none;
+    padding: 4px 0;
+
+    &:hover {
+        color: #111;
+    }
+}
+
+.logoutBtn {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 0.875rem;
+    color: #374151;
+    cursor: pointer;
+    padding: 4px 0 6px;
+
+    &:hover {
+        color: #111;
+    }
+}
+
 .loginLink {
     font-size: 0.9rem;
     color: #374151;

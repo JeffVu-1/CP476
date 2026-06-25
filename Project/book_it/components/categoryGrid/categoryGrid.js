@@ -1,3 +1,4 @@
+import Link from "next/link"
 import s from "./categoryGrid.module.scss"
 
 // SOMEONE NEEDS TO LINK THIS TO THE DB under /API FOLDER, BUILD THE BACKEND FOR THIS
@@ -17,7 +18,7 @@ export default function CategoryGrid() {
         <section className={s.section}>
             <div className={s.header}>
                 <h2 className={s.title}>Browse by category</h2>
-                <a href="#" className={s.viewAll}>View all →</a>
+                <Link href="/browse" className={s.viewAll}>View all →</Link>
             </div>
             <div className={s.grid}>
                 {CATEGORIES.map((name) => (

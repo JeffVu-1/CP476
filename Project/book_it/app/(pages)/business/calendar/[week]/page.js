@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import s from "./page.module.scss";
@@ -138,8 +139,8 @@ export default function CalendarWeekPage() {
 
         {/* Time rows */}
         {HOURS.map((hour) => (
-          <>
-            <div key={`time-${hour}`} className={s.timeCell}>
+          <React.Fragment key={`row-${hour}`}>
+            <div className={s.timeCell}>
               {formatHour(hour)}
             </div>
             {days.map((_, dayIdx) => {
@@ -160,7 +161,7 @@ export default function CalendarWeekPage() {
                 </div>
               );
             })}
-          </>
+          </React.Fragment>
         ))}
       </div>
     </div>
