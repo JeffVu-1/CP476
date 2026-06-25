@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server"
-import supabase from "@/lib/supabase"
+import { getSupabaseAdmin } from "@/lib/supabase-admin"
 
-//THIS IS AN EXAMPLE OF HOW TO MAKE A BACKENDPOINT so the frontend can hit
-// btw this endpoint is /api/categories -> so when you append a button in the frontend to hit this
-// target /api/categories
 export async function GET() {
+    const supabase = getSupabaseAdmin()
     const { data, error } = await supabase
         .from("categories")
         .select("id, name, icon_emoji")
