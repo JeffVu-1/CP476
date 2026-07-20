@@ -1,0 +1,157 @@
+.shell {
+  min-height: 100vh;
+  padding-top: 80px;
+  background: #fff;
+}
+
+.content {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 24px 64px;
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 28px;
+}
+
+.empty {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 64px 0;
+  text-align: center;
+}
+
+.emptyTitle {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.emptySub {
+  font-size: 0.875rem;
+  color: #888;
+}
+
+.browseBtn {
+  margin-top: 8px;
+  background: #171717;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover { background: #333; }
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.cardLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  border: 1px solid #e5e5e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #555;
+  flex-shrink: 0;
+}
+
+.bizName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.serviceName {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 0;
+}
+
+.cardMid {
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.date {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.time {
+  font-size: 0.78rem;
+  color: #888;
+  margin: 0;
+}
+
+.cardRight {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.price {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 20px;
+  border: 1px solid #e5e5e5;
+  color: #555;
+  text-transform: capitalize;
+}
+
+.badge_pending   { color: #b45309; border-color: #fde68a; background: #fffbeb; }
+.badge_confirmed { color: #166534; border-color: #bbf7d0; background: #f0fdf4; }
+.badge_completed { color: #1e40af; border-color: #bfdbfe; background: #eff6ff; }
+.badge_cancelled { color: #991b1b; border-color: #fecaca; background: #fef2f2; }

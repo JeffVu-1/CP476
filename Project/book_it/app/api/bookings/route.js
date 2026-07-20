@@ -39,9 +39,21 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url)
     const booking_id  = searchParams.get("booking_id")
     const provider_id = searchParams.get("provider_id")
+    const customer_id = searchParams.get("customer_id")
     const week        = searchParams.get("week") // "2026-07-20"
 
     const supabase = getSupabaseAdmin()
+
+    // Customer bookings list
+    if (customer_id) {
+        const { data, error } = await supabase
+            .from("bookings")
+            .select(`*, service:service_id (id, title, duration_minutes, price, provider:provider_id (id, full_name, business_name)), time_slot:time_slot_id (slot_date, start_time)`)
+            .eq("customer_id", customer_id)
+            .order("created_at", { ascending: false })
+        if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+        return NextResponse.json({ bookings: data ?? [] })
+    }
 
     // Single booking lookup
     if (booking_id) {

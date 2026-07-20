@@ -46,13 +46,12 @@ export default function NavigationHeader() {
                             <li><Link href="/browse">Browse</Link></li>
                             <li><Link href="/business/dashboard">Dashboard</Link></li>
                             <li><Link href={`/business/calendar/${new Date().toISOString().slice(0,10)}`}>Calendar</Link></li>
-                            <li><Link href="">Customers</Link></li>
-                            <li><Link href="/business/settings">Settings</Link></li>
+                            <li><Link href="/business/settings">My Services</Link></li>
                         </>
                     ) : (
                         <>
                             <li><Link href="/browse">Browse</Link></li>
-                            <li><Link href="">Categories</Link></li>
+                            <li><Link href="/bookings">My Bookings</Link></li>
                         </>
                     )}
                 </ul>
