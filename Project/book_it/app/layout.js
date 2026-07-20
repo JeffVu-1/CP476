@@ -1,5 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import ConditionalNav from "@/components/navigationHeader/ConditionalNav";
+import NavWrapper from "@/components/navigationHeader/NavWrapper";
 import "./globals.scss";
 
 const geistSans = Geist({
@@ -21,10 +21,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        <ConditionalNav />
-        <div style={{ paddingTop: "80px" }}>
+        <NavWrapper>
           {children}
-        </div>
+        </NavWrapper>
       </body>
     </html>
   );

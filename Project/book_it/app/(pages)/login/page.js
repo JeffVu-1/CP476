@@ -39,12 +39,10 @@ function LoginContent() {
             {/* ── LEFT ── */}
             <div className={s.left}>
                 <Link href="/"><div className={s.logo}>Book <span>it.</span></div></Link>
-
                 <div className={s.copy}>
                     <h1>Get appointments<br />at your fingertips.</h1>
                     <p>Login to preview thousands of plumbers, groomers, cleaners, and more all from one place.</p>
                 </div>
-
                 <p className={s.testimonial}></p>
             </div>
 

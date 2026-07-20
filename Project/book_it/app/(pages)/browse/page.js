@@ -17,9 +17,24 @@ function BrowseContent() {
   const searchParams = useSearchParams()
   const [search, setSearch]               = useState(searchParams.get("q") ?? "")
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") ?? "All")
+  const [priceRanges, setPriceRanges]     = useState([])
+  const [sort, setSort]                   = useState("lowest")
   const [services, setServices]           = useState([])
   const [categories, setCategories]       = useState([])
   const [loading, setLoading]             = useState(true)
+
+  const PRICE_RANGES = [
+    { label: "Under $25",   min: 0,   max: 25  },
+    { label: "$25 – $50",   min: 25,  max: 50  },
+    { label: "$50 – $100",  min: 50,  max: 100 },
+    { label: "$100+",       min: 100, max: Infinity },
+  ]
+
+  function togglePriceRange(label) {
+    setPriceRanges(prev =>
+      prev.includes(label) ? prev.filter(l => l !== label) : [...prev, label]
+    )
+  }
 
   useEffect(() => {
     const q   = searchParams.get("q")
@@ -47,18 +62,29 @@ function BrowseContent() {
     load()
   }, [])
 
-  const filtered = services.filter(svc => {
-    const text = search.toLowerCase()
-    const matchesSearch =
-      svc.title?.toLowerCase().includes(text) ||
-      svc.provider?.business_name?.toLowerCase().includes(text) ||
-      svc.category?.name?.toLowerCase().includes(text)
+  const filtered = services
+    .filter(svc => {
+      const text = search.toLowerCase()
+      const matchesSearch =
+        svc.title?.toLowerCase().includes(text) ||
+        svc.provider?.business_name?.toLowerCase().includes(text) ||
+        svc.category?.name?.toLowerCase().includes(text)
 
-    const matchesCategory =
-      selectedCategory === "All" || svc.category?.name === selectedCategory
+      const matchesCategory =
+        selectedCategory === "All" || svc.category?.name === selectedCategory
 
-    return matchesSearch && matchesCategory
-  })
+      const matchesPrice =
+        priceRanges.length === 0 ||
+        priceRanges.some(label => {
+          const range = PRICE_RANGES.find(r => r.label === label)
+          return range && svc.price >= range.min && svc.price < range.max
+        })
+
+      return matchesSearch && matchesCategory && matchesPrice
+    })
+    .sort((a, b) =>
+      sort === "lowest" ? a.price - b.price : b.price - a.price
+    )
 
   return (
     <main className={s.page}>
@@ -93,14 +119,26 @@ function BrowseContent() {
               {cat}
             </label>
           ))}
+
+          <h3>Price Range</h3>
+          {PRICE_RANGES.map(range => (
+            <label key={range.label} className={s.filterOption}>
+              <input
+                type="checkbox"
+                checked={priceRanges.includes(range.label)}
+                onChange={() => togglePriceRange(range.label)}
+              />
+              {range.label}
+            </label>
+          ))}
         </aside>
 
         <section className={s.results}>
           <div className={s.resultsHeader}>
             <h1>{loading ? "Loading…" : `${filtered.length} services found`}</h1>
-            <select className={s.sort}>
-              <option>Lowest price</option>
-              <option>Highest price</option>
+            <select className={s.sort} value={sort} onChange={e => setSort(e.target.value)}>
+              <option value="lowest">Lowest price</option>
+              <option value="highest">Highest price</option>
             </select>
           </div>
 
