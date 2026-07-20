@@ -16,14 +16,16 @@ export default function BrowsePage() {
 function BrowseContent() {
   const searchParams = useSearchParams()
   const [search, setSearch]               = useState(searchParams.get("q") ?? "")
-  const [selectedCategory, setSelectedCategory] = useState("All")
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") ?? "All")
   const [services, setServices]           = useState([])
   const [categories, setCategories]       = useState([])
   const [loading, setLoading]             = useState(true)
 
   useEffect(() => {
-    const q = searchParams.get("q")
-    if (q) setSearch(q)
+    const q   = searchParams.get("q")
+    const cat = searchParams.get("category")
+    if (q)   setSearch(q)
+    if (cat) setSelectedCategory(cat)
   }, [searchParams])
 
   useEffect(() => {
