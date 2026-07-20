@@ -66,6 +66,21 @@ export async function GET(request) {
         return NextResponse.json({ booking: data })
     }
 
+    // Provider — all bookings (no week filter)
+    if (provider_id && !week) {
+        const { data: services } = await supabase
+            .from("services").select("id").eq("provider_id", provider_id)
+        if (!services || services.length === 0) return NextResponse.json({ bookings: [] })
+        const serviceIds = services.map(s => s.id)
+        const { data, error } = await supabase
+            .from("bookings")
+            .select(`*, service:service_id (id, title, duration_minutes, price), time_slot:time_slot_id (slot_date, start_time), customer:customer_id (id, full_name, email)`)
+            .in("service_id", serviceIds)
+            .order("created_at", { ascending: false })
+        if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+        return NextResponse.json({ bookings: data ?? [] })
+    }
+
     // Provider calendar view
     if (provider_id && week) {
         const monday = new Date(week + "T00:00:00")

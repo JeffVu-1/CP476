@@ -32,9 +32,7 @@ export default function NavigationHeader() {
         router.push("/")
     }
 
-    const initials = user
-        ? user.full_name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()
-        : ""
+    const initials = user ? user.full_name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() : ""
 
     return (
         <header className={s.header}>
@@ -45,6 +43,7 @@ export default function NavigationHeader() {
                         <>
                             <li><Link href="/browse">Browse</Link></li>
                             <li><Link href="/business/dashboard">Dashboard</Link></li>
+                            <li><Link href="/business/bookings">Bookings</Link></li>
                             <li><Link href={`/business/calendar/${new Date().toISOString().slice(0,10)}`}>Calendar</Link></li>
                             <li><Link href="/business/settings">My Services</Link></li>
                         </>
@@ -60,13 +59,7 @@ export default function NavigationHeader() {
                     {user ? (
                         <>
                             <div className={s.profileWrapper} ref={dropdownRef}>
-                                <button
-                                    className={s.avatar}
-                                    onClick={() => setOpen(o => !o)}
-                                    aria-label="Account menu"
-                                >
-                                    {initials}
-                                </button>
+                                <button className={s.avatar} onClick={() => setOpen(o => !o)} aria-label="Account menu">{initials}</button>
 
                                 {open && (
                                     <div className={s.dropdown}>

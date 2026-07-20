@@ -8,9 +8,7 @@ export default function CategoryGrid() {
     const [categories, setCategories] = useState([])
 
     useEffect(() => {
-        fetch("/api/categories")
-            .then(r => r.json())
-            .then(data => setCategories(data.categories ?? []))
+        fetch("/api/categories").then(r => r.json()).then(data => setCategories(data.categories ?? []))
     }, [])
 
     return (
@@ -21,11 +19,7 @@ export default function CategoryGrid() {
             </div>
             <div className={s.grid}>
                 {categories.map(cat => (
-                    <Link
-                        key={cat.id}
-                        href={`/browse?category=${encodeURIComponent(cat.name)}`}
-                        className={s.card}
-                    >
+                    <Link key={cat.id} href={`/browse?category=${encodeURIComponent(cat.name)}`} className={s.card}>
                         <div className={s.icon}>{cat.icon_emoji}</div>
                         <span className={s.label}>{cat.name}</span>
                     </Link>
