@@ -48,6 +48,12 @@ export default function BookDatePage() {
   const [selDate,   setSelDate]   = useState(null);
   const [selSlot,   setSelSlot]   = useState(null);
 
+  // Require login
+  useEffect(() => {
+    const user = getUser();
+    if (!user) router.replace(`/login?redirect=/browse/${params.slug}/book`);
+  }, [params.slug, router]);
+
   // Load provider services
   useEffect(() => {
     fetch(`/api/services?provider_id=${params.slug}`)

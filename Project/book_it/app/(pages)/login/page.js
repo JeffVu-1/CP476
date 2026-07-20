@@ -1,13 +1,19 @@
 "use client"
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import axios from "axios"
 import { setUser } from "@/lib/auth"
 import s from "./page.module.scss"
 
 export default function LoginPage() {
-    const router = useRouter()
+    return <Suspense><LoginContent /></Suspense>
+}
+
+function LoginContent() {
+    const router       = useRouter()
+    const searchParams = useSearchParams()
+    const redirect     = searchParams.get("redirect")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
@@ -21,7 +27,7 @@ export default function LoginPage() {
         try {
             const { data } = await axios.post("/api/auth/login", { email, password })
             setUser(data)
-            router.push(data.role === "provider" ? "/business/dashboard" : "/browse")
+            router.push(redirect || (data.role === "provider" ? "/business/dashboard" : "/browse"))
         } catch (err) {
             setError(err.response?.data?.error || "Login failed")
             setLoading(false)
