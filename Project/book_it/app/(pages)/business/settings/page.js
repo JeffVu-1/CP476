@@ -35,20 +35,16 @@ const DEFAULT_HOURS = Object.fromEntries(
   DAYS.map((d, i) => [d, { open: i < 5, from: "09:00", to: "17:00" }])
 )
 
-const INITIAL_SERVICES = [
-  { id: 1, title: "Leak diagnosis & repair", category_id: 1, duration_minutes: 45, price: "95.00", delivery_mode: "in-person", description: "", hours: DEFAULT_HOURS, photos: [] },
-  { id: 2, title: "Drain cleaning",          category_id: 1, duration_minutes: 60, price: "140.00", delivery_mode: "in-person", description: "", hours: DEFAULT_HOURS, photos: [] },
-]
-
 let nextId = 10
 
 function blankService() {
   return {
-    id: nextId++,
+    id: `temp_${nextId++}`,
     title: "", category_id: "", duration_minutes: "", price: "",
     delivery_mode: "in-person", description: "",
     hours: Object.fromEntries(DAYS.map((d, i) => [d, { open: i < 5, from: "09:00", to: "17:00" }])),
     photos: [],
+    _isNew: true,
   }
 }
 
@@ -56,17 +52,40 @@ export default function SettingsPage() {
   const router  = useRouter()
   const fileRef = useRef(null)
 
-  const [services, setServices]   = useState(INITIAL_SERVICES)
-  const [view, setView]           = useState("list")   
-  const [editing, setEditing]     = useState(null)     
+  const [services, setServices]     = useState([])
+  const [loading, setLoading]       = useState(true)
+  const [view, setView]             = useState("list")
+  const [editing, setEditing]       = useState(null)
   const [wizardStep, setWizardStep] = useState(1)
-  const [toast, setToast]         = useState(null)
-  const [saved, setSaved]         = useState(false)
+  const [toast, setToast]           = useState(null)
+  const [saved, setSaved]           = useState(false)
+  const [saving, setSaving]         = useState(false)
 
   useEffect(() => {
     const user = getUser()
-    if (!user || user.role !== "provider") router.replace("/login")
+    if (!user || user.role !== "provider") { router.replace("/login"); return }
+    fetchServices(user.id)
   }, [router])
+
+  async function fetchServices(providerId) {
+    setLoading(true)
+    try {
+      const res  = await fetch(`/api/services?provider_id=${providerId}`)
+      const data = await res.json()
+      if (res.ok) {
+        setServices(data.services.map(svc => ({
+          ...svc,
+          price: String(svc.price),
+          hours: DEFAULT_HOURS,
+          photos: [],
+        })))
+      }
+    } catch (e) {
+      showToast("Failed to load services.", "error")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   function showToast(msg, type = "success") {
     setToast({ msg, type })
@@ -142,14 +161,58 @@ export default function SettingsPage() {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
-  function handleSave() {
-    setServices(prev => {
-      const exists = prev.find(s => s.id === editing.id)
-      return exists
-        ? prev.map(s => s.id === editing.id ? editing : s)
-        : [...prev, editing]
-    })
-    setSaved(true)
+  async function handleSave() {
+    const user = getUser()
+    if (!user) return
+
+    setSaving(true)
+    try {
+      // Step 1 — create the service row
+      const svcRes  = await fetch("/api/services", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          provider_id:      user.id,
+          category_id:      editing.category_id,
+          title:            editing.title,
+          description:      editing.description,
+          price:            editing.price,
+          duration_minutes: editing.duration_minutes,
+          delivery_mode:    editing.delivery_mode,
+        }),
+      })
+      const svcData = await svcRes.json()
+      if (!svcRes.ok) { showToast(svcData.error || "Failed to save service.", "error"); return }
+
+      const serviceId = svcData.service.id
+
+      // Step 2 — generate time slots from the hours config
+      const slotsRes  = await fetch("/api/time_slots", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          service_id:       serviceId,
+          duration_minutes: Number(editing.duration_minutes),
+          hours:            editing.hours,
+          weeks_ahead:      4,
+        }),
+      })
+      const slotsData = await slotsRes.json()
+      if (!slotsRes.ok) { showToast(slotsData.error || "Failed to save availability.", "error"); return }
+
+      // Update local list with the real DB id
+      setServices(prev => {
+        const exists = prev.find(s => s.id === editing.id)
+        const updated = { ...editing, id: serviceId, _isNew: false }
+        return exists ? prev.map(s => s.id === editing.id ? updated : s) : [...prev, updated]
+      })
+      setSaved(true)
+      showToast(`Service saved with ${slotsData.count ?? 0} time slots generated.`)
+    } catch (e) {
+      showToast("Network error. Try again.", "error")
+    } finally {
+      setSaving(false)
+    }
   }
 
   function catLabel(id) {
@@ -177,7 +240,11 @@ export default function SettingsPage() {
           </button>
         </div>
 
-        {services.length === 0 ? (
+        {loading ? (
+          <div className={s.emptyState}>
+            <p className={s.emptyBody}>Loading your services…</p>
+          </div>
+        ) : services.length === 0 ? (
           <div className={s.emptyState}>
             <p className={s.emptyTitle}>No services yet</p>
             <p className={s.emptyBody}>Add your first service to start accepting bookings.</p>
@@ -472,7 +539,7 @@ export default function SettingsPage() {
                 <strong>{editing.title}</strong> has been updated.
               </p>
               <button className={s.backToListBtn} onClick={backToList}>
-                ← Back to all services
+                Back to all services
               </button>
             </div>
           ) : (
@@ -490,8 +557,8 @@ export default function SettingsPage() {
                 </div>
                 <div className={s.summaryCard}>
                   <p className={s.summaryLabel}>Availability</p>
-                  <p className={s.summaryValue}>{DAYS.filter(d => editing.hours[d].open).length} days open</p>
-                  <p className={s.summaryMeta}>{DAYS.filter(d => editing.hours[d].open).map(d => d.slice(0, 3)).join(", ")}</p>
+                  <p className={s.summaryValue}>{DAYS.filter(d => editing.hours[d].open).length} days / week</p>
+                  <p className={s.summaryMeta}>{DAYS.filter(d => editing.hours[d].open).map(d => d.slice(0, 3)).join(", ")} · 4 weeks of slots</p>
                 </div>
                 <div className={s.summaryCard}>
                   <p className={s.summaryLabel}>Photos</p>
@@ -500,8 +567,8 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              <button className={s.publishBtn} onClick={handleSave}>
-                Save service <Check size={16} />
+              <button className={s.publishBtn} onClick={handleSave} disabled={saving}>
+                {saving ? "Saving…" : <> Save service <Check size={16} /></>}
               </button>
             </>
           )}
