@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { getUser } from "@/lib/auth";
 import s from "./page.module.scss";
 
 const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -34,6 +35,8 @@ export default function BookDatePage() {
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [byDate,            setByDate]            = useState({});
   const [loadingSlots,      setLoadingSlots]      = useState(false);
+  const [booking,           setBooking]           = useState(false);
+  const [bookingError,      setBookingError]      = useState(null);
 
   const today  = new Date();
   const todayY = today.getFullYear();
@@ -137,14 +140,30 @@ export default function BookDatePage() {
 
   const bizName = services[0]?.provider?.business_name || services[0]?.provider?.full_name || "Business";
 
-  function handleContinue() {
-    if (!selSlot || !selDate) return;
-    const bookingId = `${selDate.y}${String(selDate.m + 1).padStart(2, "0")}${String(selDate.d).padStart(2, "0")}`;
-    const dd = String(selDate.d).padStart(2, "0");
-    const mm = String(selDate.m + 1).padStart(2, "0");
-    router.push(
-      `/bookings/${bookingId}?slug=${params.slug}&date=${selDate.y}-${mm}-${dd}&time=${encodeURIComponent(formatTime(selSlot.time))}&service_id=${selectedServiceId}`
-    );
+  async function handleContinue() {
+    if (!selSlot || !selDate || booking) return;
+    const user = getUser();
+    if (!user) { router.push("/login"); return; }
+
+    setBooking(true);
+    setBookingError(null);
+    try {
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customer_id:  user.id,
+          service_id:   selectedServiceId,
+          time_slot_id: selSlot.id,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setBookingError(data.error || "Failed to create booking."); setBooking(false); return; }
+      router.push(`/bookings/${data.booking.id}`);
+    } catch {
+      setBookingError("Network error. Please try again.");
+      setBooking(false);
+    }
   }
 
   return (
@@ -274,12 +293,13 @@ export default function BookDatePage() {
             </p>
           </div>
 
+          {bookingError && <p style={{ color: "red", fontSize: "0.8rem", margin: "0" }}>{bookingError}</p>}
           <button
             className={s.continueBtn}
-            disabled={!selSlot}
+            disabled={!selSlot || booking}
             onClick={handleContinue}
           >
-            Continue →
+            {booking ? "Booking…" : "Continue →"}
           </button>
         </div>
       </div>

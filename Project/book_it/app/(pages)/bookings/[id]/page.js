@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Suspense, useState, useEffect } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import "./booking-confirmation.scss";
 
 export default function BookingConfirmationPage() {
@@ -13,36 +13,63 @@ export default function BookingConfirmationPage() {
   );
 }
 
-function ConfirmationContent() {
-  const { id }       = useParams();
-  const searchParams = useSearchParams();
-  const slug         = searchParams.get("slug");
-  const dateParam    = searchParams.get("date");
-  const timeParam    = searchParams.get("time");
+function formatTime(timeStr) {
+  if (!timeStr) return "—";
+  const [h, m] = timeStr.split(":").map(Number);
+  const ampm = h < 12 ? "AM" : "PM";
+  const h12  = h % 12 || 12;
+  return `${h12}:${String(m).padStart(2, "0")} ${ampm}`;
+}
 
-  const [services, setServices] = useState([]);
-  const [provider, setProvider] = useState(null);
+function formatDate(dateStr) {
+  if (!dateStr) return "—";
+  return new Date(dateStr + "T12:00:00").toLocaleDateString("en-US", {
+    weekday: "short", month: "long", day: "numeric", year: "numeric",
+  });
+}
+
+function ConfirmationContent() {
+  const { id } = useParams();
+  const [booking, setBooking] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error,   setError]   = useState(null);
 
   useEffect(() => {
-    if (!slug) return;
-    fetch(`/api/services?provider_id=${slug}`)
+    if (!id) return;
+    fetch(`/api/bookings?booking_id=${id}`)
       .then(r => r.json())
       .then(data => {
-        const svcs = data.services ?? [];
-        setServices(svcs);
-        if (svcs.length > 0) setProvider(svcs[0].provider);
-      });
-  }, [slug]);
-
-  const bizName  = provider?.business_name || provider?.full_name || "Business";
-  const service  = services[0];
-  const fromPrice = services.length > 0 ? Math.min(...services.map(s => Number(s.price))) : null;
-
-  const formattedDate = dateParam
-    ? new Date(dateParam + "T12:00:00").toLocaleDateString("en-US", {
-        weekday: "short", month: "long", day: "numeric", year: "numeric",
+        if (data.error) setError(data.error);
+        else setBooking(data.booking);
       })
-    : "—";
+      .catch(() => setError("Failed to load booking."))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  const bizName = booking?.service?.provider
+    ? (booking.service.provider.business_name || booking.service.provider.full_name)
+    : "Business";
+
+  if (loading) {
+    return (
+      <main className="booking-page">
+        <section className="confirmation-wrapper">
+          <p style={{ color: "#888" }}>Loading booking…</p>
+        </section>
+      </main>
+    );
+  }
+
+  if (error || !booking) {
+    return (
+      <main className="booking-page">
+        <section className="confirmation-wrapper">
+          <p style={{ color: "red" }}>{error || "Booking not found."}</p>
+          <Link href="/browse">← Back to browse</Link>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="booking-page">
@@ -50,12 +77,7 @@ function ConfirmationContent() {
         <Link href="/" className="booking-logo">Book <span>it.</span></Link>
         <nav className="booking-nav">
           <Link href="/browse" className="active">Browse</Link>
-          <Link href="/categories">Categories</Link>
-          <Link href="/for-business">For Business</Link>
         </nav>
-        <div className="booking-header-right">
-          <div className="user-circle">✓</div>
-        </div>
       </header>
 
       <section className="confirmation-wrapper">
@@ -64,7 +86,7 @@ function ConfirmationContent() {
         <h1>You&apos;re booked!</h1>
 
         <p className="confirmation-subtitle">
-          Confirmation #BK-{id} · Sent to your email
+          Confirmation #BK-{booking.id} · Status: {booking.status}
         </p>
 
         <section className="booking-card">
@@ -74,7 +96,7 @@ function ConfirmationContent() {
             </div>
             <div>
               <h2>{bizName}</h2>
-              <p>{service ? service.title : "Service"}</p>
+              <p>{booking.service?.title ?? "Service"}</p>
             </div>
           </div>
 
@@ -83,20 +105,20 @@ function ConfirmationContent() {
           <div className="booking-details-grid">
             <div>
               <p className="detail-label">Date</p>
-              <p className="detail-value">{formattedDate}</p>
+              <p className="detail-value">{formatDate(booking.time_slot?.slot_date)}</p>
             </div>
             <div>
               <p className="detail-label">Time</p>
-              <p className="detail-value">{timeParam ?? "—"}</p>
+              <p className="detail-value">{formatTime(booking.time_slot?.start_time)}</p>
             </div>
             <div>
               <p className="detail-label">Duration</p>
-              <p className="detail-value">{service ? `${service.duration_minutes} min` : "—"}</p>
+              <p className="detail-value">{booking.service?.duration_minutes ?? "—"} min</p>
             </div>
             <div>
               <p className="detail-label">Price</p>
               <p className="detail-value">
-                {service ? `$${service.price} · pay on site` : fromPrice ? `From $${fromPrice}` : "—"}
+                {booking.service?.price ? `$${booking.service.price} · pay on site` : "—"}
               </p>
             </div>
           </div>

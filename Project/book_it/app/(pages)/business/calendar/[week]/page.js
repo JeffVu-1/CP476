@@ -1,29 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
+import { getUser } from "@/lib/auth";
 import s from "./page.module.scss";
 
 const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
-
-const MOCK_BOOKINGS = [
-  { id: 1, name: "Sarah K.", dayOffset: 0, startHour: 8, duration: 1 },
-  { id: 2, name: "Jane Doe", dayOffset: 0, startHour: 8, duration: 1 },
-  { id: 3, name: "Mike R.", dayOffset: 0, startHour: 8, duration: 2 },
-  { id: 4, name: "Lisa M.", dayOffset: 1, startHour: 8, duration: 2 },
-  { id: 5, name: "Tom B.", dayOffset: 1, startHour: 9, duration: 1 },
-  { id: 6, name: "Alex P.", dayOffset: 2, startHour: 8, duration: 1 },
-  { id: 7, name: "Rita J.", dayOffset: 2, startHour: 8, duration: 2 },
-  { id: 8, name: "Sam Q.", dayOffset: 3, startHour: 8, duration: 1 },
-  { id: 9, name: "Dee V.", dayOffset: 3, startHour: 9, duration: 2 },
-  { id: 10, name: "Pat L.", dayOffset: 4, startHour: 8, duration: 2 },
-];
+const DAY_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 function parseWeekSlug(slug) {
   const date = new Date(slug + "T00:00:00");
   if (isNaN(date)) return null;
-  // Snap to Monday
   const day = date.getDay();
   const diff = day === 0 ? -6 : 1 - day;
   date.setDate(date.getDate() + diff);
@@ -40,10 +28,6 @@ function getMondayOfCurrentWeek() {
 
 function toSlug(date) {
   return date.toISOString().slice(0, 10);
-}
-
-function formatHeaderDate(date) {
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
 function formatWeekRange(monday) {
@@ -68,19 +52,38 @@ function isToday(date) {
   );
 }
 
-const DAY_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+function timeToHour(timeStr) {
+  // "09:00:00" → 9
+  return parseInt(timeStr.split(":")[0], 10);
+}
+
+function durationToBlocks(minutes) {
+  // round to nearest hour block (each block = 1 hr)
+  return Math.max(1, Math.round(minutes / 60));
+}
 
 export default function CalendarWeekPage() {
-  const router = useRouter();
-  const { week } = useParams();
+  const router    = useRouter();
+  const { week }  = useParams();
+  const monday    = parseWeekSlug(week) ?? getMondayOfCurrentWeek();
+  const [bookings, setBookings] = useState([]);
+  const [loading,  setLoading]  = useState(true);
 
-  const monday = parseWeekSlug(week) ?? getMondayOfCurrentWeek();
-
-  const days = Array.from({ length: 5 }, (_, i) => {
+  const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
     return d;
   });
+
+  useEffect(() => {
+    const user = getUser();
+    if (!user) return;
+    setLoading(true);
+    fetch(`/api/bookings?provider_id=${user.id}&week=${toSlug(monday)}`)
+      .then(r => r.json())
+      .then(data => setBookings(data.bookings ?? []))
+      .finally(() => setLoading(false));
+  }, [week]);
 
   function navigate(offset) {
     const next = new Date(monday);
@@ -90,6 +93,21 @@ export default function CalendarWeekPage() {
 
   function goToday() {
     router.push(`/business/calendar/${toSlug(getMondayOfCurrentWeek())}`);
+  }
+
+  // Build lookup: { "2026-07-21": { 9: [booking, ...], 10: [...] } }
+  const bookingMap = {};
+  for (const b of bookings) {
+    if (!b.time_slot) continue;
+    const date = b.time_slot.slot_date;
+    const hour = timeToHour(b.time_slot.start_time);
+    if (!bookingMap[date]) bookingMap[date] = {};
+    if (!bookingMap[date][hour]) bookingMap[date][hour] = [];
+    bookingMap[date][hour].push(b);
+  }
+
+  function dayKey(date) {
+    return date.toISOString().slice(0, 10);
   }
 
   return (
@@ -104,7 +122,9 @@ export default function CalendarWeekPage() {
         </div>
         <div className={s.navRight}>
           <button className={s.bookingsBtn}>Bookings</button>
-          <div className={s.avatar}>JD</div>
+          <div className={s.avatar}>
+            {getUser()?.full_name?.slice(0, 2).toUpperCase() ?? "??"}
+          </div>
         </div>
       </nav>
 
@@ -114,6 +134,7 @@ export default function CalendarWeekPage() {
           <button className={s.arrowBtn} onClick={() => navigate(-1)}>&#8249;</button>
           <button className={s.arrowBtn} onClick={() => navigate(1)}>&#8250;</button>
           <span className={s.weekRange}>{formatWeekRange(monday)}</span>
+          {loading && <span style={{ fontSize: "0.75rem", color: "#888", marginLeft: 8 }}>Loading…</span>}
         </div>
         <div className={s.toolbarRight}>
           <div className={s.viewToggle}>
@@ -121,15 +142,12 @@ export default function CalendarWeekPage() {
             <button className={`${s.viewBtn} ${s.viewBtnActive}`}>Week</button>
             <button className={s.viewBtn}>Month</button>
           </div>
-          <button className={s.newBtn}>+ New</button>
         </div>
       </div>
 
       <div className={s.grid}>
-        {/* Corner cell */}
         <div className={s.cornerCell} />
 
-        {/* Day headers */}
         {days.map((day, i) => (
           <div key={i} className={`${s.dayHeader} ${isToday(day) ? s.todayHeader : ""}`}>
             <span className={s.dayName}>{DAY_NAMES[i]} {day.getDate()}</span>
@@ -137,25 +155,22 @@ export default function CalendarWeekPage() {
           </div>
         ))}
 
-        {/* Time rows */}
-        {HOURS.map((hour) => (
+        {HOURS.map(hour => (
           <React.Fragment key={`row-${hour}`}>
-            <div className={s.timeCell}>
-              {formatHour(hour)}
-            </div>
-            {days.map((_, dayIdx) => {
-              const bookings = MOCK_BOOKINGS.filter(
-                (b) => b.dayOffset === dayIdx && b.startHour === hour
-              );
+            <div className={s.timeCell}>{formatHour(hour)}</div>
+            {days.map((day, dayIdx) => {
+              const cellBookings = bookingMap[dayKey(day)]?.[hour] ?? [];
               return (
                 <div key={`cell-${hour}-${dayIdx}`} className={s.cell}>
-                  {bookings.map((b) => (
+                  {cellBookings.map(b => (
                     <div
                       key={b.id}
                       className={s.booking}
-                      style={{ "--duration": b.duration }}
+                      style={{ "--duration": durationToBlocks(b.service?.duration_minutes ?? 60) }}
+                      title={`${b.customer?.full_name} · ${b.service?.title}`}
                     >
-                      {b.name}
+                      <span className={s.bookingName}>{b.customer?.full_name ?? "Customer"}</span>
+                      <span className={s.bookingService}>{b.service?.title}</span>
                     </div>
                   ))}
                 </div>
