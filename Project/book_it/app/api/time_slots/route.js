@@ -3,6 +3,33 @@ import { getSupabaseAdmin } from "@/lib/supabase-admin"
 
 const DAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
 
+export async function GET(request) {
+    const { searchParams } = new URL(request.url)
+    const service_id = searchParams.get("service_id")
+    if (!service_id) return NextResponse.json({ error: "service_id is required" }, { status: 400 })
+
+    const today = new Date().toISOString().split("T")[0]
+    const supabase = getSupabaseAdmin()
+    const { data, error } = await supabase
+        .from("time_slots")
+        .select("id, slot_date, start_time")
+        .eq("service_id", service_id)
+        .eq("is_booked", false)
+        .gte("slot_date", today)
+        .order("slot_date", { ascending: true })
+        .order("start_time", { ascending: true })
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+    // Group by date: { "2026-07-21": ["09:00:00", ...], ... }
+    const byDate = {}
+    for (const row of data) {
+        if (!byDate[row.slot_date]) byDate[row.slot_date] = []
+        byDate[row.slot_date].push({ id: row.id, time: row.start_time })
+    }
+    return NextResponse.json({ byDate })
+}
+
 export async function POST(request) {
     const body = await request.json()
     const { service_id, duration_minutes, hours, weeks_ahead = 4 } = body

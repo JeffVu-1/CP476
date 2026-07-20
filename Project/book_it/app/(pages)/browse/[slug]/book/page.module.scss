@@ -361,3 +361,53 @@
     cursor: not-allowed;
   }
 }
+
+// ─── Service selector ──────────────────────────────────────────────────────────
+
+.serviceSelector {
+  max-width: 780px;
+  margin: 0 auto 16px;
+  padding: 0 16px;
+}
+
+.serviceSelectorLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.serviceSelectorRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.servicePill {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: #444;
+
+  &:hover {
+    border-color: #999;
+    color: #171717;
+  }
+}
+
+.servicePillActive {
+  @extend .servicePill;
+  background: #171717;
+  border-color: #171717;
+  color: #fff;
+
+  &:hover {
+    background: #333;
+    border-color: #333;
+  }
+}

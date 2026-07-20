@@ -7,46 +7,33 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import s from "./page.module.scss";
 
 const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-
 const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January","February","March","April","May","June",
+  "July","August","September","October","November","December",
 ];
 
-function getMockAvail(year, month, day) {
-  const seed = (day * 13 + month * 7 + (year % 100) * 3) % 12;
-  if (seed < 2) return { status: "booked", slots: [] };
-  if (seed < 4) return { status: "few",  slots: ["9:00 AM", "2:00 PM"] };
-  if (seed < 7) return { status: "some", slots: ["9:00 AM", "10:00 AM", "11:00 AM", "2:00 PM", "3:30 PM"] };
-  return {
-    status: "lots",
-    slots: ["9:00 AM", "9:30 AM", "10:00 AM", "11:00 AM", "12:30 PM", "1:00 PM", "2:00 PM", "3:30 PM"],
-  };
+function formatTime(timeStr) {
+  // "09:00:00" → "9:00 AM"
+  const [h, m] = timeStr.split(":").map(Number);
+  const ampm = h < 12 ? "AM" : "PM";
+  const h12  = h % 12 || 12;
+  return `${h12}:${String(m).padStart(2, "0")} ${ampm}`;
 }
 
-function dotCount(status) {
-  if (status === "few")  return 1;
-  if (status === "some") return 2;
-  if (status === "lots") return 3;
-  return 0;
+function dotCount(slots) {
+  if (slots >= 6) return 3;
+  if (slots >= 3) return 2;
+  return 1;
 }
 
 export default function BookDatePage() {
-  const params  = useParams();
-  const router  = useRouter();
-  const [bizName, setBizName] = useState("");
+  const params = useParams();
+  const router = useRouter();
 
-  useEffect(() => {
-    fetch(`/api/services?provider_id=${params.slug}`)
-      .then(r => r.json())
-      .then(data => {
-        const svcs = data.services ?? [];
-        if (svcs.length > 0) {
-          const p = svcs[0].provider;
-          setBizName(p?.business_name || p?.full_name || "Business");
-        }
-      });
-  }, [params.slug]);
+  const [services,          setServices]          = useState([]);
+  const [selectedServiceId, setSelectedServiceId] = useState(null);
+  const [byDate,            setByDate]            = useState({});
+  const [loadingSlots,      setLoadingSlots]      = useState(false);
 
   const today  = new Date();
   const todayY = today.getFullYear();
@@ -55,28 +42,55 @@ export default function BookDatePage() {
 
   const [viewYear,  setViewYear]  = useState(todayY);
   const [viewMonth, setViewMonth] = useState(todayM);
-  const [selDate,   setSelDate]   = useState({ y: todayY, m: todayM, d: todayD });
-  const [selTime,   setSelTime]   = useState(null);
+  const [selDate,   setSelDate]   = useState(null);
+  const [selSlot,   setSelSlot]   = useState(null);
+
+  // Load provider services
+  useEffect(() => {
+    fetch(`/api/services?provider_id=${params.slug}`)
+      .then(r => r.json())
+      .then(data => {
+        const svcs = data.services ?? [];
+        setServices(svcs);
+        if (svcs.length > 0) setSelectedServiceId(svcs[0].id);
+      });
+  }, [params.slug]);
+
+  // Load time slots when service changes
+  useEffect(() => {
+    if (!selectedServiceId) return;
+    setLoadingSlots(true);
+    setByDate({});
+    setSelDate(null);
+    setSelSlot(null);
+    fetch(`/api/time_slots?service_id=${selectedServiceId}`)
+      .then(r => r.json())
+      .then(data => setByDate(data.byDate ?? {}))
+      .finally(() => setLoadingSlots(false));
+  }, [selectedServiceId]);
 
   const cells = useMemo(() => {
-    const first      = new Date(viewYear, viewMonth, 1).getDay();
-    const daysInMo   = new Date(viewYear, viewMonth + 1, 0).getDate();
-    const out        = Array(first).fill(null);
+    const first    = new Date(viewYear, viewMonth, 1).getDay();
+    const daysInMo = new Date(viewYear, viewMonth + 1, 0).getDate();
+    const out      = Array(first).fill(null);
     for (let d = 1; d <= daysInMo; d++) out.push(d);
     return out;
   }, [viewYear, viewMonth]);
+
+  function dateKey(y, m, d) {
+    return `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+  }
 
   function isPast(d) {
     return new Date(viewYear, viewMonth, d) < new Date(todayY, todayM, todayD);
   }
 
-  function availFor(d) {
-    if (isPast(d)) return null;
-    return getMockAvail(viewYear, viewMonth, d);
+  function slotsFor(d) {
+    return byDate[dateKey(viewYear, viewMonth, d)] ?? [];
   }
 
   function isSelected(d) {
-    return d === selDate.d && viewMonth === selDate.m && viewYear === selDate.y;
+    return selDate?.d === d && selDate?.m === viewMonth && selDate?.y === viewYear;
   }
 
   function isToday(d) {
@@ -84,49 +98,52 @@ export default function BookDatePage() {
   }
 
   function selectDay(d) {
-    const a = availFor(d);
-    if (!a || a.status === "booked") return;
+    if (isPast(d) || slotsFor(d).length === 0) return;
     setSelDate({ y: viewYear, m: viewMonth, d });
-    setSelTime(null);
+    setSelSlot(null);
   }
 
   function prevMonth() {
-    if (viewMonth === 0) { setViewYear((y) => y - 1); setViewMonth(11); }
-    else setViewMonth((m) => m - 1);
+    if (viewMonth === 0) { setViewYear(y => y - 1); setViewMonth(11); }
+    else setViewMonth(m => m - 1);
   }
 
   function nextMonth() {
-    if (viewMonth === 11) { setViewYear((y) => y + 1); setViewMonth(0); }
-    else setViewMonth((m) => m + 1);
+    if (viewMonth === 11) { setViewYear(y => y + 1); setViewMonth(0); }
+    else setViewMonth(m => m + 1);
   }
 
   function goToday() {
     setViewYear(todayY);
     setViewMonth(todayM);
-    setSelDate({ y: todayY, m: todayM, d: todayD });
-    setSelTime(null);
+    setSelDate(null);
+    setSelSlot(null);
   }
 
-  const selectedAvail = getMockAvail(selDate.y, selDate.m, selDate.d);
+  const selectedSlots = selDate
+    ? (byDate[dateKey(selDate.y, selDate.m, selDate.d)] ?? [])
+    : [];
 
-  const selectedDateLong = useMemo(() => {
-    return new Date(selDate.y, selDate.m, selDate.d)
-      .toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric" });
-  }, [selDate]);
+  const selectedDateLong = selDate
+    ? new Date(selDate.y, selDate.m, selDate.d)
+        .toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric" })
+    : "—";
 
-  const selectedDateShort = useMemo(() => {
-    return new Date(selDate.y, selDate.m, selDate.d)
-      .toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })
-      .toUpperCase();
-  }, [selDate]);
+  const selectedDateShort = selDate
+    ? new Date(selDate.y, selDate.m, selDate.d)
+        .toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })
+        .toUpperCase()
+    : "—";
+
+  const bizName = services[0]?.provider?.business_name || services[0]?.provider?.full_name || "Business";
 
   function handleContinue() {
-    if (!selTime) return;
+    if (!selSlot || !selDate) return;
     const bookingId = `${selDate.y}${String(selDate.m + 1).padStart(2, "0")}${String(selDate.d).padStart(2, "0")}`;
     const dd = String(selDate.d).padStart(2, "0");
     const mm = String(selDate.m + 1).padStart(2, "0");
     router.push(
-      `/bookings/${bookingId}?slug=${params.slug}&date=${selDate.y}-${mm}-${dd}&time=${encodeURIComponent(selTime)}`
+      `/bookings/${bookingId}?slug=${params.slug}&date=${selDate.y}-${mm}-${dd}&time=${encodeURIComponent(formatTime(selSlot.time))}&service_id=${selectedServiceId}`
     );
   }
 
@@ -134,19 +151,34 @@ export default function BookDatePage() {
     <div className={s.shell}>
       <div className={s.topBar}>
         <nav className={s.breadcrumb}>
-          <Link href={`/browse/${params.slug}`} className={s.breadcrumbLink}>{bizName || "Business"}</Link>
+          <Link href={`/browse/${params.slug}`} className={s.breadcrumbLink}>{bizName}</Link>
           <span className={s.sep}>›</span>
           <span>Book</span>
         </nav>
-
         <div className={s.steps}>
-          <span className={s.stepActive}>1 · Date</span>
+          <span className={s.stepActive}>1 · Date &amp; Time</span>
           <span className={s.stepArrow}>→</span>
-          <span className={s.stepInactive}>2 · Time</span>
-          <span className={s.stepArrow}>→</span>
-          <span className={s.stepInactive}>3 · Details</span>
+          <span className={s.stepInactive}>2 · Confirm</span>
         </div>
       </div>
+
+      {/* Service selector */}
+      {services.length > 1 && (
+        <div className={s.serviceSelector}>
+          <p className={s.serviceSelectorLabel}>Select a service</p>
+          <div className={s.serviceSelectorRow}>
+            {services.map(svc => (
+              <button
+                key={svc.id}
+                className={selectedServiceId === svc.id ? s.servicePillActive : s.servicePill}
+                onClick={() => setSelectedServiceId(svc.id)}
+              >
+                {svc.title} · ${svc.price}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className={s.card}>
         <div className={s.calPanel}>
@@ -162,20 +194,19 @@ export default function BookDatePage() {
           </div>
 
           <div className={s.dayHeaderRow}>
-            {DAY_NAMES.map((n) => (
-              <div key={n} className={s.dayHeaderCell}>{n}</div>
-            ))}
+            {DAY_NAMES.map(n => <div key={n} className={s.dayHeaderCell}>{n}</div>)}
           </div>
+
           <div className={s.calGrid}>
             {cells.map((day, i) => {
               if (day === null) return <div key={`e${i}`} className={s.emptyCell} />;
 
-              const a       = availFor(day);
-              const past    = !a;
-              const booked  = a?.status === "booked";
-              const sel     = isSelected(day);
-              const tod     = isToday(day);
-              const dots    = a ? dotCount(a.status) : 0;
+              const past   = isPast(day);
+              const slots  = slotsFor(day);
+              const avail  = !past && slots.length > 0;
+              const sel    = isSelected(day);
+              const tod    = isToday(day);
+              const dots   = avail ? dotCount(slots.length) : 0;
 
               return (
                 <div
@@ -183,16 +214,15 @@ export default function BookDatePage() {
                   onClick={() => selectDay(day)}
                   className={[
                     s.cell,
-                    sel                        && s.cellSelected,
-                    (past || booked)           && s.cellDisabled,
-                    !past && !booked && !sel   && s.cellClickable,
+                    sel              && s.cellSelected,
+                    (past || !avail) && s.cellDisabled,
+                    avail && !sel    && s.cellClickable,
                   ].filter(Boolean).join(" ")}
                 >
                   <span className={s.dayNum}>{day}</span>
-                  {tod && !sel && <span className={s.newBadge}>new</span>}
+                  {tod && !sel && <span className={s.newBadge}>today</span>}
                   <span className={s.cellBottom}>
-                    {booked  && <span className={s.bookedDot}>●</span>}
-                    {!booked && dots > 0 && (
+                    {avail && !sel && dots > 0 && (
                       <span className={s.dots}>{"·".repeat(dots)}</span>
                     )}
                   </span>
@@ -202,8 +232,13 @@ export default function BookDatePage() {
           </div>
 
           <div className={s.legend}>
-            <span><span className={s.legendDot}>●</span> fully booked</span>
-            <span><span className={s.legendDots}>●●●</span> lots of slots</span>
+            {loadingSlots
+              ? <span>Loading availability…</span>
+              : <>
+                  <span><span className={s.legendDots}>·</span> limited slots</span>
+                  <span><span className={s.legendDots}>···</span> lots of slots</span>
+                </>
+            }
           </div>
         </div>
 
@@ -212,34 +247,36 @@ export default function BookDatePage() {
             AVAILABLE · <strong>{selectedDateShort}</strong>
           </p>
 
-          {selectedAvail.slots.length === 0 ? (
+          {!selDate ? (
+            <p className={s.noSlots}>Select a date to see available times.</p>
+          ) : selectedSlots.length === 0 ? (
             <p className={s.noSlots}>No availability on this date.</p>
           ) : (
             <div className={s.slotGrid}>
-              {selectedAvail.slots.map((t) => (
+              {selectedSlots.map(slot => (
                 <button
-                  key={t}
-                  onClick={() => setSelTime(t)}
-                  className={selTime === t ? s.slotActive : s.slotBtn}
+                  key={slot.id}
+                  onClick={() => setSelSlot(slot)}
+                  className={selSlot?.id === slot.id ? s.slotActive : s.slotBtn}
                 >
-                  {t}
+                  {formatTime(slot.time)}
                 </button>
               ))}
             </div>
           )}
 
-          <p className={s.tzNote}>All times in EDT · 30 min slots</p>
+          <p className={s.tzNote}>All times in EDT</p>
 
           <div className={s.summary}>
             <p className={s.summaryLabel}>Selected</p>
             <p className={s.summaryValue}>
-              {selTime ? `${selectedDateLong} · ${selTime}` : "—"}
+              {selSlot ? `${selectedDateLong} · ${formatTime(selSlot.time)}` : "—"}
             </p>
           </div>
 
           <button
             className={s.continueBtn}
-            disabled={!selTime}
+            disabled={!selSlot}
             onClick={handleContinue}
           >
             Continue →
