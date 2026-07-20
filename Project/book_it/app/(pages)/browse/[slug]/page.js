@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { MapPin, Clock } from "lucide-react";
+import { getUser } from "@/lib/auth";
 import s from "./page.module.scss";
 
 const TABS = ["Overview", "Services", "Reviews", "Contact"];
@@ -23,6 +24,8 @@ export default function BusinessProfilePage() {
   const [services, setServices]   = useState([]);
   const [provider, setProvider]   = useState(null);
   const [loading, setLoading]     = useState(true);
+  const currentUser = getUser();
+  const canBook = !currentUser || currentUser.role !== "provider";
 
   useEffect(() => {
     async function load() {
@@ -144,9 +147,15 @@ export default function BusinessProfilePage() {
                   </p>
                 </>
               )}
-              <Link href={`/browse/${params.slug}/book`} className={s.bookBtn}>
-                Book Now
-              </Link>
+              {canBook ? (
+                <Link href={`/browse/${params.slug}/book`} className={s.bookBtn}>
+                  Book Now
+                </Link>
+              ) : (
+                <p style={{ fontSize: "0.8rem", color: "#888", textAlign: "center" }}>
+                  Business accounts can&apos;t make bookings.
+                </p>
+              )}
               <button className={s.messageBtn}>Message business</button>
               <hr className={s.divider} />
               <p className={s.hoursLine}><Clock size={13} /> {services.length} service{services.length !== 1 ? "s" : ""} available</p>

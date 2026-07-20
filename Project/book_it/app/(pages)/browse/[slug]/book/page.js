@@ -48,10 +48,11 @@ export default function BookDatePage() {
   const [selDate,   setSelDate]   = useState(null);
   const [selSlot,   setSelSlot]   = useState(null);
 
-  // Require login
+  // Require login, block providers
   useEffect(() => {
     const user = getUser();
     if (!user) router.replace(`/login?redirect=/browse/${params.slug}/book`);
+    else if (user.role === "provider") router.replace(`/browse/${params.slug}`);
   }, [params.slug, router]);
 
   // Load provider services
