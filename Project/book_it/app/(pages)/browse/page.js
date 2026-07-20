@@ -3,19 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { BUSINESSES } from "@/lib/data";
 import s from "./page.module.scss";
-
-const categories = [
-  "All",
-  "Plumbing",
-  "Pet grooming",
-  "Cleaning",
-  "Hair & beauty",
-  "Tutoring",
-  "Photography",
-  "Fitness Training",
-];
 
 export default function BrowsePage() {
   return (
@@ -27,27 +15,48 @@ export default function BrowsePage() {
 
 function BrowseContent() {
   const searchParams = useSearchParams()
-  const [search, setSearch] = useState(searchParams.get("q") ?? "");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [search, setSearch]               = useState(searchParams.get("q") ?? "")
+  const [selectedCategory, setSelectedCategory] = useState("All")
+  const [services, setServices]           = useState([])
+  const [categories, setCategories]       = useState([])
+  const [loading, setLoading]             = useState(true)
 
   useEffect(() => {
     const q = searchParams.get("q")
     if (q) setSearch(q)
-  }, [searchParams]);
+  }, [searchParams])
 
-  const filteredServices = BUSINESSES.filter((b) => {
-    const searchText = search.toLowerCase();
+  useEffect(() => {
+    async function load() {
+      setLoading(true)
+      try {
+        const [svcRes, catRes] = await Promise.all([
+          fetch("/api/services"),
+          fetch("/api/categories"),
+        ])
+        const svcData = await svcRes.json()
+        const catData = await catRes.json()
+        setServices(svcData.services ?? [])
+        setCategories(["All", ...(catData.categories ?? []).map(c => c.name)])
+      } finally {
+        setLoading(false)
+      }
+    }
+    load()
+  }, [])
 
+  const filtered = services.filter(svc => {
+    const text = search.toLowerCase()
     const matchesSearch =
-      b.tagline.toLowerCase().includes(searchText) ||
-      b.name.toLowerCase().includes(searchText) ||
-      b.category.toLowerCase().includes(searchText);
+      svc.title?.toLowerCase().includes(text) ||
+      svc.provider?.business_name?.toLowerCase().includes(text) ||
+      svc.category?.name?.toLowerCase().includes(text)
 
     const matchesCategory =
-      selectedCategory === "All" || b.category === selectedCategory;
+      selectedCategory === "All" || svc.category?.name === selectedCategory
 
-    return matchesSearch && matchesCategory;
-  });
+    return matchesSearch && matchesCategory
+  })
 
   return (
     <main className={s.page}>
@@ -57,87 +66,61 @@ function BrowseContent() {
           type="text"
           placeholder="What service do you need?"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={e => setSearch(e.target.value)}
         />
-
         <input
           className={s.searchInput}
           type="text"
           placeholder="Location"
           defaultValue="Waterloo, ON"
         />
-
         <button className={s.searchButton}>Search</button>
       </section>
 
       <section className={s.content}>
         <aside className={s.sidebar}>
           <h3>Category</h3>
-
-          {categories.map((category) => (
-            <label key={category} className={s.filterOption}>
+          {categories.map(cat => (
+            <label key={cat} className={s.filterOption}>
               <input
                 type="radio"
                 name="category"
-                checked={selectedCategory === category}
-                onChange={() => setSelectedCategory(category)}
+                checked={selectedCategory === cat}
+                onChange={() => setSelectedCategory(cat)}
               />
-              {category}
+              {cat}
             </label>
           ))}
-
-          <h3>Price</h3>
-          <label className={s.filterOption}>
-            <input type="checkbox" /> $
-          </label>
-          <label className={s.filterOption}>
-            <input type="checkbox" /> $$
-          </label>
-          <label className={s.filterOption}>
-            <input type="checkbox" /> $$$
-          </label>
-
-          <h3>Availability</h3>
-          <label className={s.filterOption}>
-            <input type="checkbox" /> Today
-          </label>
-          <label className={s.filterOption}>
-            <input type="checkbox" /> This week
-          </label>
         </aside>
 
         <section className={s.results}>
           <div className={s.resultsHeader}>
-            <h1>{filteredServices.length} services found</h1>
-
+            <h1>{loading ? "Loading…" : `${filtered.length} services found`}</h1>
             <select className={s.sort}>
-              <option>Top rated</option>
               <option>Lowest price</option>
               <option>Highest price</option>
             </select>
           </div>
 
-          {filteredServices.length === 0 ? (
-            <p className={s.emptyMessage}>
-              No services available in this category yet.
-            </p>
+          {loading ? (
+            <p className={s.emptyMessage}>Loading services…</p>
+          ) : filtered.length === 0 ? (
+            <p className={s.emptyMessage}>No services available yet.</p>
           ) : (
             <div className={s.grid}>
-              {filteredServices.map((b) => (
-                <article key={b.id} className={s.card}>
-                  <div className={s.coverPhoto}>cover photo</div>
+              {filtered.map(svc => (
+                <article key={svc.id} className={s.card}>
+                  <div className={s.coverPhoto}>{svc.category?.icon_emoji ?? "🔧"}</div>
 
                   <div className={s.cardBody}>
-                    <h2>{b.name}</h2>
-                    <p>{b.tagline}</p>
+                    <h2>{svc.provider?.business_name || svc.provider?.full_name}</h2>
+                    <p>{svc.title}</p>
                     <p>
-                      {b.category} · ${b.price} · {b.mode}
+                      {svc.category?.name} · ${svc.price} · {svc.delivery_mode}
                     </p>
-                    <p>
-                      ★ {b.rating} · {b.location}
-                    </p>
+                    <p>{svc.duration_minutes} min</p>
 
-                    <Link href={`/browse/${b.id}`} className={s.detailsLink}>
+                    <Link href={`/browse/${svc.provider_id}`} className={s.detailsLink}>
                       View Details
                     </Link>
                   </div>

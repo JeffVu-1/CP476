@@ -4,9 +4,17 @@ import { getSupabaseAdmin } from "@/lib/supabase-admin"
 export async function GET(request) {
     const { searchParams } = new URL(request.url)
     const provider_id = searchParams.get("provider_id")
-    if (!provider_id) { return NextResponse.json({ error: "provider_id is required" }, { status: 400 })}
+
     const supabase = getSupabaseAdmin()
-    const { data, error } = await supabase.from("services").select("*").eq("provider_id", provider_id).order("created_at", { ascending: true })
+
+    let query = supabase
+        .from("services")
+        .select(`*, provider:provider_id (id, full_name, business_name), category:category_id (id, name, icon_emoji)`)
+        .order("created_at", { ascending: true })
+
+    if (provider_id) query = query.eq("provider_id", provider_id)
+
+    const { data, error } = await query
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     return NextResponse.json({ services: data })
 }
