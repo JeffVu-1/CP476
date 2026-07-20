@@ -1,23 +1,24 @@
 .shell {
-  min-height: 100vh;
-  padding-top: 80px;
+  min-height: calc(100vh - 80px);
+
   background: #fff;
 }
 
 .content {
   max-width: 760px;
   margin: 0 auto;
-  padding: 0 24px 64px;
+  padding: 40px 24px 64px;
 }
 
 .heading {
   font-size: 1.5rem;
   font-weight: 700;
+  color: #222222;
   margin-bottom: 28px;
 }
 
 .empty {
-  color: #888;
+  color: #6a6a6a;
   font-size: 0.9rem;
 }
 
@@ -33,24 +34,25 @@
 .emptyTitle {
   font-size: 1rem;
   font-weight: 600;
+  color: #222222;
 }
 
 .emptySub {
   font-size: 0.875rem;
-  color: #888;
+  color: #6a6a6a;
 }
 
 .browseBtn {
   margin-top: 8px;
-  background: #171717;
+  background: #ff385c;
   color: #fff;
-  padding: 10px 20px;
+  padding: 12px 24px;
   border-radius: 8px;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: none;
 
-  &:hover { background: #333; }
+  &:hover { background: #e00b41; }
 }
 
 .list {
@@ -67,9 +69,20 @@
   align-items: center;
   gap: 16px;
   padding: 16px 20px;
-  border: 1px solid #e5e5e5;
-  border-radius: 10px;
+  border: 1px solid #dddddd;
+  border-radius: 14px;
   background: #fff;
+  transition: box-shadow 0.15s;
+
+  &:hover {
+    box-shadow: rgba(0,0,0,0.02) 0 0 0 1px, rgba(0,0,0,0.04) 0 2px 6px, rgba(0,0,0,0.08) 0 4px 8px;
+  }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
 }
 
 .cardLeft {
@@ -78,20 +91,24 @@
   gap: 12px;
   flex: 1;
   min-width: 0;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 }
 
 .avatar {
   width: 40px;
   height: 40px;
   border-radius: 8px;
-  background: #f3f4f6;
-  border: 1px solid #e5e5e5;
+  background: #f2f2f2;
+  border: 1px solid #dddddd;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.7rem;
   font-weight: 600;
-  color: #555;
+  color: #6a6a6a;
   flex-shrink: 0;
 }
 
@@ -99,6 +116,7 @@
   font-size: 0.9rem;
   font-weight: 600;
   margin: 0;
+  color: #222222;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -106,24 +124,30 @@
 
 .serviceName {
   font-size: 0.8rem;
-  color: #666;
+  color: #6a6a6a;
   margin: 0;
 }
 
 .cardMid {
   flex-shrink: 0;
   text-align: right;
+
+  @media (max-width: 600px) {
+    text-align: left;
+    padding-left: 52px;
+  }
 }
 
 .date {
   font-size: 0.875rem;
   font-weight: 500;
+  color: #222222;
   margin: 0;
 }
 
 .time {
   font-size: 0.78rem;
-  color: #888;
+  color: #6a6a6a;
   margin: 0;
 }
 
@@ -133,11 +157,20 @@
   flex-direction: column;
   align-items: flex-end;
   gap: 4px;
+
+  @media (max-width: 600px) {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    padding-left: 52px;
+    justify-content: space-between;
+  }
 }
 
 .price {
   font-size: 0.875rem;
   font-weight: 600;
+  color: #222222;
   margin: 0;
 }
 
@@ -145,9 +178,9 @@
   font-size: 0.72rem;
   font-weight: 600;
   padding: 3px 8px;
-  border-radius: 20px;
-  border: 1px solid #e5e5e5;
-  color: #555;
+  border-radius: 9999px;
+  border: 1px solid #dddddd;
+  color: #6a6a6a;
   text-transform: capitalize;
 }
 
@@ -162,11 +195,12 @@
 
 .cancelBtn {
   font-size: 0.78rem;
-  color: #888;
+  color: #6a6a6a;
   background: none;
-  border: 1px solid #e5e5e5;
-  border-radius: 6px;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
   padding: 4px 10px;
+  font-family: inherit;
   cursor: pointer;
 
   &:hover {
@@ -177,14 +211,14 @@
 
 .cancelledLabel {
   font-size: 0.75rem;
-  color: #aaa;
+  color: #929292;
   text-transform: capitalize;
 }
 
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -193,22 +227,23 @@
 
 .modal {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 28px 32px;
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  box-shadow: rgba(0,0,0,0.02) 0 0 0 1px, rgba(0,0,0,0.04) 0 2px 6px, rgba(0,0,0,0.18) 0 12px 32px;
 }
 
 .modalTitle {
   font-size: 1rem;
   font-weight: 700;
+  color: #222222;
   margin: 0 0 10px;
 }
 
 .modalBody {
   font-size: 0.875rem;
-  color: #555;
+  color: #6a6a6a;
   margin: 0 0 24px;
   line-height: 1.5;
 }
@@ -222,11 +257,13 @@
 .modalKeep {
   padding: 9px 18px;
   border-radius: 8px;
-  border: 1px solid #e5e5e5;
+  border: 1px solid #dddddd;
   background: #fff;
   font-size: 0.875rem;
+  font-family: inherit;
   cursor: pointer;
-  &:hover { background: #f5f5f5; }
+
+  &:hover { background: #f7f7f7; }
 }
 
 .modalConfirm {
@@ -237,7 +274,9 @@
   color: #fff;
   font-size: 0.875rem;
   font-weight: 600;
+  font-family: inherit;
   cursor: pointer;
+
   &:hover:not(:disabled) { background: #b91c1c; }
   &:disabled { opacity: 0.6; cursor: not-allowed; }
 }

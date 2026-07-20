@@ -1,10 +1,9 @@
 .shell {
   width: 680px;
   margin: 0 auto;
-  padding: 80px 24px 80px;
-  min-height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
-  color: #171717;
+  padding: 24px 24px 80px;
+  min-height: calc(100vh - 80px);
+  color: #222222;
   box-sizing: border-box;
 
   @media (max-width: 728px) {
@@ -30,7 +29,7 @@
   animation: slideIn 0.2s ease;
 }
 
-.success { background: #171717; color: #fff; }
+.success { background: #222222; color: #fff; }
 .error   { background: #dc2626; color: #fff; }
 
 @keyframes slideIn {
@@ -65,7 +64,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: #171717;
+  background: #ff385c;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -75,7 +74,7 @@
   cursor: pointer;
   white-space: nowrap;
 
-  &:hover { background: #333; }
+  &:hover { background: #e00b41; }
 }
 
 .serviceCardList {
@@ -142,7 +141,7 @@
 .serviceCardTitle {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #171717;
+  color: #222222;
   margin: 0 0 5px;
 }
 
@@ -174,7 +173,7 @@
   border-radius: 6px;
   padding: 6px 12px;
 
-  .serviceCardClickable:hover & { background: #ececec; color: #171717; }
+  .serviceCardClickable:hover & { background: #ececec; color: #222222; }
 }
 
 .emptyState {
@@ -226,13 +225,13 @@
   padding: 0;
   white-space: nowrap;
 
-  &:hover { color: #171717; }
+  &:hover { color: #222222; }
 }
 
 .wizardServiceName {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #171717;
+  color: #222222;
   margin: 0;
   min-width: 0;
   overflow: hidden;
@@ -277,7 +276,7 @@
   z-index: 0;
 }
 
-.stepLineDone { background: #171717; }
+.stepLineDone { background: #ff385c; }
 
 .stepCircle {
   width: 28px;
@@ -295,8 +294,8 @@
   z-index: 1;
 }
 
-.stepDone   { background: #171717; border-color: #171717; color: #fff; }
-.stepActive { background: #171717; border-color: #171717; color: #fff; }
+.stepDone   { background: #ff385c; border-color: #ff385c; color: #fff; }
+.stepActive { background: #ff385c; border-color: #ff385c; color: #fff; }
 
 .stepLabel {
   font-size: 0.7rem;
@@ -306,7 +305,7 @@
   white-space: nowrap;
 }
 
-.stepLabelActive { color: #171717; font-weight: 600; }
+.stepLabelActive { color: #222222; font-weight: 600; }
 
 // ─── Page header (wizard) ──────────────────────────────────────────────────────
 
@@ -331,7 +330,7 @@
   gap: 6px;
   font-size: 0.82rem;
   font-weight: 600;
-  color: #171717;
+  color: #222222;
 
   > span:first-child { display: block; }
 }
@@ -344,7 +343,7 @@
   border-radius: 8px;
   padding: 10px 12px;
   font-size: 0.875rem;
-  color: #171717;
+  color: #222222;
   outline: none;
   font-family: inherit;
 
@@ -357,7 +356,7 @@
   border-radius: 8px;
   padding: 10px 12px;
   font-size: 0.875rem;
-  color: #171717;
+  color: #222222;
   background: #fff;
   outline: none;
   cursor: pointer;
@@ -370,7 +369,7 @@
   border-radius: 8px;
   padding: 10px 12px;
   font-size: 0.875rem;
-  color: #171717;
+  color: #222222;
   resize: vertical;
   outline: none;
   font-family: inherit;
@@ -396,7 +395,7 @@
   padding: 10px 6px 10px 12px;
   font-size: 0.875rem;
   flex: 1;
-  color: #171717;
+  color: #222222;
   background: transparent;
 
   &::-webkit-outer-spin-button,
@@ -435,7 +434,7 @@
   padding: 10px 12px 10px 0;
   font-size: 0.875rem;
   flex: 1;
-  color: #171717;
+  color: #222222;
   background: transparent;
 
   &::-webkit-outer-spin-button,
@@ -504,12 +503,12 @@
 }
 
 // Drive track color via JS class on the row instead of CSS sibling hack
-.dayRow:not(.dayRowClosed) .toggleTrack { background: #171717; }
+.dayRow:not(.dayRowClosed) .toggleTrack { background: #ff385c; }
 
 .dayName {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #171717;
+  color: #222222;
   min-width: 90px;
 
   .dayRowClosed & { color: #aaa; }
@@ -526,7 +525,7 @@
   border-radius: 6px;
   padding: 7px 10px;
   font-size: 0.82rem;
-  color: #171717;
+  color: #222222;
   outline: none;
 
   &:focus { border-color: #aaa; }
@@ -558,7 +557,7 @@
   color: #444;
   margin: 0 0 4px;
 
-  span { color: #171717; text-decoration: underline; }
+  span { color: #222222; text-decoration: underline; }
 }
 
 .dropSub { font-size: 0.78rem; color: #aaa; margin: 0; }
@@ -648,7 +647,7 @@
 .summaryValue {
   font-size: 1rem;
   font-weight: 600;
-  color: #171717;
+  color: #222222;
   margin: 0 0 4px;
 }
 
@@ -669,7 +668,7 @@
   justify-content: center;
   gap: 8px;
   width: 100%;
-  background: #171717;
+  background: #ff385c;
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -678,7 +677,7 @@
   font-weight: 600;
   cursor: pointer;
 
-  &:hover { background: #333; }
+  &:hover { background: #e00b41; }
 }
 
 .publishSuccess {
@@ -694,7 +693,7 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: #171717;
+  background: #ff385c;
   color: #fff;
   display: flex;
   align-items: center;
@@ -708,7 +707,7 @@
 
 .backToListBtn {
   margin-top: 8px;
-  background: #171717;
+  background: #ff385c;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -717,7 +716,7 @@
   font-weight: 600;
   cursor: pointer;
 
-  &:hover { background: #333; }
+  &:hover { background: #e00b41; }
 }
 
 // ─── Shared: Tip ──────────────────────────────────────────────────────────────
@@ -737,7 +736,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  color: #171717;
+  color: #222222;
 }
 
 .tipBody {
@@ -766,7 +765,7 @@
   border-radius: 8px;
   padding: 10px 18px;
   font-size: 0.875rem;
-  color: #171717;
+  color: #222222;
   text-decoration: none;
   cursor: pointer;
 
@@ -779,7 +778,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: #171717;
+  background: #ff385c;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -788,7 +787,7 @@
   font-weight: 600;
   cursor: pointer;
 
-  &:hover { background: #333; }
+  &:hover { background: #e00b41; }
 }
 
 // ─── Confirmation modal ────────────────────────────────────────────────────────

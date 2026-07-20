@@ -1,11 +1,11 @@
 .page {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    min-height: 100vh;
+    min-height: calc(100vh - 80px);
 }
 
 .left {
-    background: #f3f4f6;
+    background: #f7f7f7;
     padding: 48px;
     display: flex;
     flex-direction: column;
@@ -15,11 +15,12 @@
 .logo {
     font-size: 1.25rem;
     font-weight: 700;
-    color: #111;
+    color: #222222;
     letter-spacing: -0.5px;
 
     span {
         font-style: italic;
+        color: #ff385c;
     }
 }
 
@@ -33,13 +34,13 @@
         font-size: 2rem;
         font-weight: 700;
         line-height: 1.2;
-        color: #111;
+        color: #222222;
         margin-bottom: 16px;
     }
 
     p {
         font-size: 0.9rem;
-        color: #6b7280;
+        color: #6a6a6a;
         line-height: 1.6;
         margin-bottom: 24px;
         max-width: 340px;
@@ -59,13 +60,13 @@
         align-items: center;
         gap: 8px;
         font-size: 0.875rem;
-        color: #374151;
+        color: #3f3f3f;
     }
 }
 
 .testimonial {
     font-size: 0.8rem;
-    color: #9ca3af;
+    color: #929292;
     font-style: italic;
 }
 
@@ -80,18 +81,18 @@
     h2 {
         font-size: 1.5rem;
         font-weight: 700;
-        color: #111;
+        color: #222222;
         margin-bottom: 4px;
     }
 }
 
 .loginPrompt {
     font-size: 0.875rem;
-    color: #6b7280;
+    color: #6a6a6a;
     margin-bottom: 28px;
 
     a {
-        color: #111;
+        color: #222222;
         font-weight: 500;
         text-decoration: underline;
     }
@@ -109,47 +110,52 @@
         gap: 6px;
         font-size: 0.8rem;
         font-weight: 500;
-        color: #374151;
+        color: #3f3f3f;
     }
 
     input {
-        padding: 11px 14px;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
+        padding: 14px 12px;
+        border: 1px solid #dddddd;
+        border-radius: 8px;
         font-size: 0.9rem;
-        color: #111;
+        font-family: inherit;
+        color: #222222;
         outline: none;
         background: #fff;
+        height: 56px;
         transition: border-color 0.15s;
 
         &::placeholder {
-            color: #9ca3af;
+            color: #929292;
         }
 
         &:focus {
-            border-color: #111;
+            border-color: #222222;
+            border-width: 2px;
         }
     }
 }
 
 .submit {
     width: 100%;
-    padding: 13px;
-    background: #111;
+    padding: 14px;
+    background: #ff385c;
     color: #fff;
     border: none;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: inherit;
     cursor: pointer;
+    height: 48px;
     transition: background 0.15s;
 
     &:hover {
-        background: #333;
+        background: #e00b41;
     }
 
     &:disabled {
-        background: #9ca3af;
+        background: #ffd1da;
         cursor: not-allowed;
     }
 }
@@ -162,7 +168,7 @@
 
     span {
         font-size: 0.75rem;
-        color: #9ca3af;
+        color: #929292;
         white-space: nowrap;
     }
 
@@ -171,7 +177,7 @@
         content: "";
         flex: 1;
         height: 1px;
-        background: #e5e7eb;
+        background: #ebebeb;
     }
 }
 
@@ -184,38 +190,39 @@
 
 .oauthBtn {
     width: 100%;
-    padding: 11px 14px;
+    padding: 13px 14px;
     background: #fff;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
     font-size: 0.875rem;
     font-weight: 500;
-    color: #111;
+    font-family: inherit;
+    color: #222222;
     cursor: pointer;
     transition: background 0.15s;
 
     &:hover {
-        background: #f9fafb;
+        background: #f7f7f7;
     }
 }
 
 .error {
     background: #fef2f2;
-    color: #dc2626;
+    color: #c13515;
     border: 1px solid #fecaca;
     padding: 10px 14px;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 0.875rem;
     margin-bottom: 16px;
 }
 
 .terms {
     font-size: 0.75rem;
-    color: #9ca3af;
+    color: #929292;
     margin-top: 4px;
 
     a {
-        color: #9ca3af;
+        color: #929292;
         text-decoration: underline;
     }
 }

@@ -24,7 +24,7 @@ export default function MyBookingsPage() {
   const router = useRouter();
   const [bookings,       setBookings]       = useState([]);
   const [loading,        setLoading]        = useState(true);
-  const [confirmCancel,  setConfirmCancel]  = useState(null); // { id, title }
+  const [confirmCancel,  setConfirmCancel]  = useState(null);
   const [cancelling,     setCancelling]     = useState(false);
 
   useEffect(() => {

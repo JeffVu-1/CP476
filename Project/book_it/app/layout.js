@@ -22,7 +22,9 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
         <ConditionalNav />
-        {children}
+        <div style={{ paddingTop: "80px" }}>
+          {children}
+        </div>
       </body>
     </html>
   );

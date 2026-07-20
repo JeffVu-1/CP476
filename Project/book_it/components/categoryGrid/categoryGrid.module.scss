@@ -14,16 +14,18 @@
 .title {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #111;
+    color: #222222;
 }
 
 .viewAll {
     font-size: 0.875rem;
-    color: #6b7280;
+    font-weight: 500;
+    color: #6a6a6a;
     text-decoration: none;
 
     &:hover {
-        color: #111;
+        color: #222222;
+        text-decoration: underline;
     }
 }
 
@@ -31,38 +33,43 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 .card {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding: 16px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    padding: 18px;
+    border: 1px solid #dddddd;
+    border-radius: 14px;
     background: #fff;
     cursor: pointer;
     text-decoration: none;
+    transition: box-shadow 0.15s;
 
     &:hover {
-        border-color: #d1d5db;
-        background: #f9fafb;
+        box-shadow: rgba(0,0,0,0.02) 0 0 0 1px, rgba(0,0,0,0.04) 0 2px 6px, rgba(0,0,0,0.1) 0 4px 8px;
     }
 }
 
 .icon {
-    width: 40px;
-    height: 40px;
-    background: #f3f4f6;
-    border-radius: 6px;
+    width: 44px;
+    height: 44px;
+    background: #f7f7f7;
+    border-radius: 8px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
 }
 
 .label {
     font-size: 0.875rem;
-    color: #111;
+    font-weight: 500;
+    color: #222222;
 }

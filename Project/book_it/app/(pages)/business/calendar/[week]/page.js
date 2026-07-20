@@ -2,28 +2,29 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import Link from "next/link";
 import { getUser } from "@/lib/auth";
 import s from "./page.module.scss";
 
 const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
 const DAY_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+function getMondayOf(date) {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
 function parseWeekSlug(slug) {
   const date = new Date(slug + "T00:00:00");
   if (isNaN(date)) return null;
-  const day = date.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  date.setDate(date.getDate() + diff);
-  return date;
+  return getMondayOf(date);
 }
 
 function getMondayOfCurrentWeek() {
-  const today = new Date();
-  const day = today.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  today.setDate(today.getDate() + diff);
-  return today;
+  return getMondayOf(new Date());
 }
 
 function toSlug(date) {
@@ -35,6 +36,10 @@ function formatWeekRange(monday) {
   friday.setDate(monday.getDate() + 4);
   const month = monday.toLocaleDateString("en-US", { month: "long" });
   return `${month} ${monday.getDate()} – ${friday.getDate()}, ${monday.getFullYear()}`;
+}
+
+function formatDayLabel(date) {
+  return date.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 }
 
 function formatHour(h) {
@@ -53,27 +58,49 @@ function isToday(date) {
 }
 
 function timeToHour(timeStr) {
-  // "09:00:00" → 9
   return parseInt(timeStr.split(":")[0], 10);
 }
 
 function durationToBlocks(minutes) {
-  // round to nearest hour block (each block = 1 hr)
   return Math.max(1, Math.round(minutes / 60));
 }
 
+function dayKey(date) {
+  return date.toISOString().slice(0, 10);
+}
+
 export default function CalendarWeekPage() {
-  const router    = useRouter();
-  const { week }  = useParams();
-  const monday    = parseWeekSlug(week) ?? getMondayOfCurrentWeek();
+  const router   = useRouter();
+  const { week } = useParams();
+  const monday   = parseWeekSlug(week) ?? getMondayOfCurrentWeek();
+
   const [bookings, setBookings] = useState([]);
   const [loading,  setLoading]  = useState(true);
+  const [view, setView]         = useState("week");
+
+  // selected day for day-view (default: today if in this week, else monday)
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const end = new Date(monday);
+    end.setDate(monday.getDate() + 6);
+    return today >= monday && today <= end ? today : new Date(monday);
+  });
+
+  // auto switch to day view on narrow screens
+  useEffect(() => {
+    if (window.innerWidth < 640) setView("day");
+  }, []);
 
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
     return d;
   });
+
+  const displayDays = view === "day"
+    ? days.filter(d => dayKey(d) === dayKey(selectedDate))
+    : days;
 
   useEffect(() => {
     const user = getUser();
@@ -85,17 +112,46 @@ export default function CalendarWeekPage() {
       .finally(() => setLoading(false));
   }, [week]);
 
-  function navigate(offset) {
+  function navigateWeek(offset) {
     const next = new Date(monday);
     next.setDate(monday.getDate() + offset * 7);
     router.push(`/business/calendar/${toSlug(next)}`);
   }
 
+  function navigateDay(offset) {
+    const next = new Date(selectedDate);
+    next.setDate(selectedDate.getDate() + offset);
+    setSelectedDate(next);
+    const nextMonday = getMondayOf(next);
+    if (toSlug(nextMonday) !== toSlug(monday)) {
+      router.push(`/business/calendar/${toSlug(nextMonday)}`);
+    }
+  }
+
+  function navigate(offset) {
+    if (view === "day") navigateDay(offset);
+    else navigateWeek(offset);
+  }
+
   function goToday() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    setSelectedDate(today);
     router.push(`/business/calendar/${toSlug(getMondayOfCurrentWeek())}`);
   }
 
-  // Build lookup: { "2026-07-21": { 9: [booking, ...], 10: [...] } }
+  function switchView(v) {
+    setView(v);
+    if (v === "day") {
+      // select today if it's in the current week, else first displayed day
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const end = new Date(monday);
+      end.setDate(monday.getDate() + 6);
+      setSelectedDate(today >= monday && today <= end ? today : new Date(monday));
+    }
+  }
+
   const bookingMap = {};
   for (const b of bookings) {
     if (!b.time_slot) continue;
@@ -106,51 +162,43 @@ export default function CalendarWeekPage() {
     bookingMap[date][hour].push(b);
   }
 
-  function dayKey(date) {
-    return date.toISOString().slice(0, 10);
-  }
+  const colCount = displayDays.length;
 
   return (
     <div className={s.shell}>
-      <nav className={s.nav}>
-        <span className={s.logo}>Book <em>it.</em></span>
-        <div className={s.navLinks}>
-          <Link href="/business/dashboard" className={s.navLink}>Dashboard</Link>
-          <Link href="#" className={`${s.navLink} ${s.active}`}>Calendar</Link>
-          <Link href="/business/customers" className={s.navLink}>Customers</Link>
-          <Link href="/business/settings" className={s.navLink}>Settings</Link>
-        </div>
-        <div className={s.navRight}>
-          <button className={s.bookingsBtn}>Bookings</button>
-          <div className={s.avatar}>
-            {getUser()?.full_name?.slice(0, 2).toUpperCase() ?? "??"}
-          </div>
-        </div>
-      </nav>
-
       <div className={s.toolbar}>
         <div className={s.toolbarLeft}>
           <button className={s.todayBtn} onClick={goToday}>Today</button>
           <button className={s.arrowBtn} onClick={() => navigate(-1)}>&#8249;</button>
           <button className={s.arrowBtn} onClick={() => navigate(1)}>&#8250;</button>
-          <span className={s.weekRange}>{formatWeekRange(monday)}</span>
+          <span className={s.weekRange}>
+            {view === "day" ? formatDayLabel(selectedDate) : formatWeekRange(monday)}
+          </span>
           {loading && <span style={{ fontSize: "0.75rem", color: "#888", marginLeft: 8 }}>Loading…</span>}
         </div>
         <div className={s.toolbarRight}>
           <div className={s.viewToggle}>
-            <button className={s.viewBtn}>Day</button>
-            <button className={`${s.viewBtn} ${s.viewBtnActive}`}>Week</button>
-            <button className={s.viewBtn}>Month</button>
+            <button
+              className={`${s.viewBtn} ${view === "day" ? s.viewBtnActive : ""}`}
+              onClick={() => switchView("day")}
+            >Day</button>
+            <button
+              className={`${s.viewBtn} ${view === "week" ? s.viewBtnActive : ""}`}
+              onClick={() => switchView("week")}
+            >Week</button>
           </div>
         </div>
       </div>
 
-      <div className={s.grid}>
+      <div
+        className={s.grid}
+        style={{ gridTemplateColumns: `52px repeat(${colCount}, 1fr)` }}
+      >
         <div className={s.cornerCell} />
 
-        {days.map((day, i) => (
+        {displayDays.map((day, i) => (
           <div key={i} className={`${s.dayHeader} ${isToday(day) ? s.todayHeader : ""}`}>
-            <span className={s.dayName}>{DAY_NAMES[i]} {day.getDate()}</span>
+            <span className={s.dayName}>{DAY_NAMES[days.indexOf(day)] ?? ""} {day.getDate()}</span>
             {isToday(day) && <span className={s.todayBadge}>today</span>}
           </div>
         ))}
@@ -158,7 +206,7 @@ export default function CalendarWeekPage() {
         {HOURS.map(hour => (
           <React.Fragment key={`row-${hour}`}>
             <div className={s.timeCell}>{formatHour(hour)}</div>
-            {days.map((day, dayIdx) => {
+            {displayDays.map((day, dayIdx) => {
               const cellBookings = bookingMap[dayKey(day)]?.[hour] ?? [];
               return (
                 <div key={`cell-${hour}-${dayIdx}`} className={s.cell}>

@@ -1,66 +1,115 @@
+// ─── Header bar ────────────────────────────────────────────────────────────────
+
 .header {
     width: 100%;
-    background-color: #fff;
-    border-bottom: 1px solid #e5e7eb;
+    background: #fff;
+    border-bottom: 1px solid #dddddd;
     position: fixed;
+    top: 0;
+    z-index: 100;
 }
 
 .nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
     padding: 0 24px;
-    height: 56px;
+    height: 80px;
+
+    @media (max-width: 768px) {
+        padding: 0 16px;
+    }
 }
+
+// ─── Logo ──────────────────────────────────────────────────────────────────────
 
 .logo {
     font-size: 1.25rem;
     font-weight: 700;
-    color: #111;
+    color: #222222;
     letter-spacing: -0.5px;
     white-space: nowrap;
+    text-decoration: none;
+    flex-shrink: 0;
 }
 
 .logoAccent {
     font-style: italic;
+    color: #ff385c;
 }
+
+// ─── Desktop nav links ─────────────────────────────────────────────────────────
 
 .navLinks {
     display: flex;
     align-items: center;
     gap: 28px;
     list-style: none;
-    margin: 0;
+    margin: 0 0 0 32px;
     padding: 0;
+    flex: 1;
 
     li a {
-        font-size: 0.9rem;
-        color: #374151;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #3f3f3f;
         text-decoration: none;
 
-        &:hover {
-            color: #111;
-        }
+        &:hover { color: #222222; }
+    }
+
+    @media (max-width: 768px) {
+        display: none;
     }
 }
+
+// ─── Desktop auth ──────────────────────────────────────────────────────────────
 
 .authButtons {
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-shrink: 0;
 }
+
+.loginLink {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #222222;
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+
+    @media (max-width: 768px) { display: none; }
+}
+
+.signupButton {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #fff;
+    background: #ff385c;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+
+    &:hover { background: #e00b41; }
+
+    @media (max-width: 768px) { display: none; }
+}
+
+// ─── Avatar / Dropdown ─────────────────────────────────────────────────────────
 
 .profileWrapper {
     position: relative;
 }
 
 .avatar {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    background: #111;
+    background: #222222;
     color: #fff;
     font-size: 0.7rem;
     font-weight: 700;
@@ -70,9 +119,7 @@
     align-items: center;
     justify-content: center;
 
-    &:hover {
-        background: #333;
-    }
+    &:hover { background: #3f3f3f; }
 }
 
 .dropdown {
@@ -80,62 +127,24 @@
     top: calc(100% + 10px);
     right: 0;
     background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    border: 1px solid #dddddd;
+    border-radius: 14px;
+    box-shadow: rgba(0,0,0,0.02) 0 0 0 1px, rgba(0,0,0,0.04) 0 2px 6px, rgba(0,0,0,0.1) 0 4px 8px;
     padding: 14px 16px 10px;
     min-width: 200px;
     z-index: 200;
+
+    @media (max-width: 768px) { display: none; }
 }
 
-.dropdownName {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #111;
-    margin: 0 0 2px;
-}
-
-.dropdownEmail {
-    font-size: 0.78rem;
-    color: #888;
-    margin: 0;
-}
+.dropdownName  { font-size: 0.875rem; font-weight: 600; color: #222222; margin: 0 0 2px; }
+.dropdownEmail { font-size: 0.78rem; color: #6a6a6a; margin: 0; }
+.dropdownRole  { font-size: 0.72rem; color: #929292; margin: 2px 0 0; text-transform: capitalize; }
 
 .dropdownDivider {
     border: none;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid #ebebeb;
     margin: 10px 0;
-}
-
-.bookingsBtn {
-    background: none;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    padding: 6px 14px;
-    font-size: 0.82rem;
-    cursor: pointer;
-    color: #374151;
-
-    &:hover { border-color: #888; }
-}
-
-.dropdownRole {
-    font-size: 0.72rem;
-    color: #bbb;
-    margin: 2px 0 0;
-    text-transform: capitalize;
-}
-
-.dropdownLink {
-    display: block;
-    font-size: 0.875rem;
-    color: #374151;
-    text-decoration: none;
-    padding: 4px 0;
-
-    &:hover {
-        color: #111;
-    }
 }
 
 .logoutBtn {
@@ -144,35 +153,201 @@
     border: none;
     text-align: left;
     font-size: 0.875rem;
-    color: #374151;
+    font-family: inherit;
+    color: #3f3f3f;
     cursor: pointer;
     padding: 4px 0 6px;
 
-    &:hover {
-        color: #111;
+    &:hover { color: #222222; }
+}
+
+// ─── Hamburger ─────────────────────────────────────────────────────────────────
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    flex-shrink: 0;
+
+    span {
+        display: block;
+        width: 20px;
+        height: 2px;
+        background: #222222;
+        border-radius: 2px;
+    }
+
+    &:hover { background: #f2f2f2; }
+
+    @media (max-width: 768px) {
+        display: flex;
     }
 }
 
-.loginLink {
-    font-size: 0.9rem;
-    color: #374151;
+// ─── Overlay ───────────────────────────────────────────────────────────────────
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.overlayVisible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+// ─── Left drawer ───────────────────────────────────────────────────────────────
+
+.drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    background: #fff;
+    z-index: 210;
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: rgba(0,0,0,0.12) 4px 0 24px;
+}
+
+.drawerOpen {
+    transform: translateX(0);
+}
+
+.drawerHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 80px;
+    border-bottom: 1px solid #dddddd;
+    flex-shrink: 0;
+}
+
+.drawerLogo {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #222222;
+    letter-spacing: -0.5px;
     text-decoration: none;
 
-    &:hover {
-        color: #111;
+    span {
+        font-style: italic;
+        color: #ff385c;
     }
 }
 
-.signupButton {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #fff;
-    background-color: #111;
-    text-decoration: none;
-    padding: 8px 18px;
+.drawerClose {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: #6a6a6a;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 6px;
 
-    &:hover {
-        background-color: #333;
-    }
+    &:hover { background: #f2f2f2; color: #222222; }
+}
+
+.drawerLinks {
+    list-style: none;
+    margin: 0;
+    padding: 12px 0;
+    flex: 1;
+    overflow-y: auto;
+
+    li { margin: 0; }
+}
+
+.drawerLink {
+    display: block;
+    padding: 14px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #3f3f3f;
+    text-decoration: none;
+
+    &:hover { background: #f7f7f7; color: #222222; }
+}
+
+.drawerLinkActive {
+    @extend .drawerLink;
+    color: #ff385c;
+    font-weight: 600;
+}
+
+.drawerFooter {
+    border-top: 1px solid #dddddd;
+    padding: 20px 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.drawerUserName  { font-size: 0.9rem; font-weight: 600; color: #222222; margin: 0; }
+.drawerUserEmail { font-size: 0.8rem; color: #6a6a6a; margin: 0; }
+.drawerUserRole  { font-size: 0.75rem; color: #929292; margin: 0; text-transform: capitalize; }
+
+.drawerLogout {
+    margin-top: 8px;
+    background: none;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    color: #3f3f3f;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+
+    &:hover { border-color: #929292; color: #222222; }
+}
+
+.drawerAuthLink {
+    display: block;
+    padding: 12px 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #222222;
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+}
+
+.drawerSignup {
+    display: block;
+    text-align: center;
+    background: #ff385c;
+    color: #fff;
+    padding: 13px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    margin-top: 4px;
+
+    &:hover { background: #e00b41; }
 }

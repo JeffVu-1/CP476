@@ -1,12 +1,12 @@
 .page {
-    display: grid; 
+    display: grid;
     grid-template-columns: 1fr 1fr;
-    min-height: 100vh;
+    min-height: calc(100vh - 80px);
 }
 
 .left {
     flex: 1;
-    background: #f3f4f6;
+    background: #f7f7f7;
     padding: 48px;
     display: flex;
     flex-direction: column;
@@ -16,7 +16,13 @@
 .logo {
     font-size: 1.25rem;
     font-weight: 700;
-    span { font-style: italic; }
+    color: #222222;
+    letter-spacing: -0.5px;
+
+    span {
+        font-style: italic;
+        color: #ff385c;
+    }
 }
 
 .copy {
@@ -24,9 +30,14 @@
         font-size: 2rem;
         font-weight: 700;
         line-height: 1.2;
+        color: #222222;
         margin-bottom: 16px;
     }
-    p { color: #6b7280; margin-bottom: 24px; }
+    p {
+        color: #6a6a6a;
+        margin-bottom: 24px;
+        line-height: 1.6;
+    }
 }
 
 .perks {
@@ -35,12 +46,13 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    color: #374151;
+    color: #3f3f3f;
+    font-size: 0.875rem;
 }
 
 .testimonial {
     font-size: 0.875rem;
-    color: #6b7280;
+    color: #6a6a6a;
 }
 
 .right {
@@ -54,21 +66,27 @@
     h2 {
         font-size: 1.5rem;
         font-weight: 700;
+        color: #222222;
         margin-bottom: 4px;
     }
 }
 
 .loginPrompt {
     font-size: 0.875rem;
-    color: #6b7280;
+    color: #6a6a6a;
     margin-bottom: 24px;
-    a { color: #111; font-weight: 500; }
+
+    a {
+        color: #222222;
+        font-weight: 500;
+        text-decoration: underline;
+    }
 }
 
 .tabs {
     display: flex;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
     overflow: hidden;
     margin-bottom: 24px;
 
@@ -76,15 +94,19 @@
         flex: 1;
         padding: 10px;
         border: none;
-        background: #f3f4f6;
+        background: #f7f7f7;
         cursor: pointer;
         font-size: 0.875rem;
+        font-family: inherit;
+        font-weight: 500;
+        color: #6a6a6a;
     }
 }
 
 .active {
     background: #fff !important;
-    font-weight: 500;
+    color: #222222 !important;
+    font-weight: 600 !important;
 }
 
 .form {
@@ -99,51 +121,89 @@
         gap: 4px;
         font-size: 0.875rem;
         font-weight: 500;
+        color: #3f3f3f;
     }
 
     input {
-        padding: 10px 12px;
-        border: 1px solid #e5e7eb;
-        border-radius: 6px;
+        padding: 14px 12px;
+        border: 1px solid #dddddd;
+        border-radius: 8px;
         font-size: 0.9rem;
+        font-family: inherit;
+        color: #222222;
         outline: none;
-        &:focus { border-color: #111; }
+        height: 56px;
+
+        &:focus {
+            border-color: #222222;
+            border-width: 2px;
+        }
     }
 }
 
 .submit {
-    padding: 12px;
-    background: #111;
+    padding: 14px;
+    background: #ff385c;
     color: #fff;
     border: none;
-    border-radius: 6px;
-    font-size: 0.9rem;
+    border-radius: 8px;
+    font-size: 1rem;
     font-weight: 500;
+    font-family: inherit;
     cursor: pointer;
-    &:hover { background: #333; }
+    height: 48px;
+
+    &:hover {
+        background: #e00b41;
+    }
+
+    &:disabled {
+        background: #ffd1da;
+        cursor: not-allowed;
+    }
 }
 
 .divider {
     text-align: center;
     font-size: 0.75rem;
-    color: #9ca3af;
+    color: #929292;
     margin: 12px 0;
 }
 
 .oauth {
     width: 100%;
-    padding: 10px;
+    padding: 13px;
     background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
     font-size: 0.875rem;
+    font-family: inherit;
+    color: #222222;
     cursor: pointer;
     margin-bottom: 8px;
-    &:hover { background: #f9fafb; }
+
+    &:hover {
+        background: #f7f7f7;
+    }
 }
 
 .terms {
     font-size: 0.75rem;
-    color: #9ca3af;
+    color: #929292;
     margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+    .page {
+        grid-template-columns: 1fr;
+    }
+
+    .left {
+        display: none;
+    }
+
+    .right {
+        padding: 40px 24px;
+        max-width: 100%;
+    }
 }
