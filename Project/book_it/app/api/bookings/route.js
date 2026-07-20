@@ -3,7 +3,7 @@ import { getSupabaseAdmin } from "@/lib/supabase-admin"
 
 export async function POST(request) {
     const body = await request.json()
-    const { customer_id, service_id, time_slot_id, notes } = body
+    const { customer_id, service_id, time_slot_id } = body
     if (!customer_id)  return NextResponse.json({ error: "customer_id is required" }, { status: 400 })
     if (!service_id)   return NextResponse.json({ error: "service_id is required" }, { status: 400 })
     if (!time_slot_id) return NextResponse.json({ error: "time_slot_id is required" }, { status: 400 })
@@ -23,7 +23,7 @@ export async function POST(request) {
     // Create the booking
     const { data: booking, error: bookErr } = await supabase
         .from("bookings")
-        .insert({ customer_id, service_id, time_slot_id, status: "pending", notes: notes || null })
+        .insert({ customer_id, service_id, time_slot_id, status: "pending" })
         .select()
         .single()
 
