@@ -15,23 +15,6 @@ const TODAY_SCHEDULE = [
   { time: "4:00 PM",  name: "Tom B.",   service: "Pipe inspection",       status: "confirmed" },
 ];
 
-const PENDING = [
-  { name: "Lisa M.", service: "Water heater install", when: "Tue 2:30 PM" },
-  { name: "Alex P.", service: "Drain cleaning",       when: "Wed 9:00 AM" },
-  { name: "Rita J.", service: "Leak repair",          when: "Thu 11:00 AM" },
-];
-
-const QUICK_ACTIONS = [
-  "Block off time",
-  "Add a service",
-  "Set business hours",
-  "View public page",
-];
-
-function initials(name) {
-  return name.split(" ").map(n => n[0]).join("").toUpperCase();
-}
-
 function todayLabel() {
   return new Date().toLocaleDateString("en-US", {
     weekday: "short", month: "short", day: "numeric", year: "numeric",
@@ -63,7 +46,6 @@ export default function DashboardPage() {
             <h1 className={s.bizName}>{businessName}</h1>
             <p className={s.dateLabel}>Today · {todayLabel()}</p>
           </div>
-          <button className={s.addBtn}>+ Add appointment</button>
         </div>
 
         <div className={s.kpiRow}>
@@ -112,41 +94,6 @@ export default function DashboardPage() {
               ))}
             </ul>
           </section>
-
-          <div className={s.rightCol}>
-            <section className={s.pendingSection}>
-              <h2 className={s.sectionTitle}>
-                Pending requests
-                <span className={s.newBadge}>{PENDING.length} new</span>
-              </h2>
-              <ul className={s.pendingList}>
-                {PENDING.map((p, i) => (
-                  <li key={i} className={s.pendingItem}>
-                    <div className={s.pendingAvatar}>{initials(p.name)}</div>
-                    <div className={s.pendingInfo}>
-                      <p className={s.pendingName}>{p.name}</p>
-                      <p className={s.pendingDetail}>{p.service} · {p.when}</p>
-                    </div>
-                    <div className={s.pendingActions}>
-                      <button className={s.declineBtn}>Decline</button>
-                      <button className={s.acceptBtn}>Accept</button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </section>
-
-            <section className={s.quickSection}>
-              <h2 className={s.sectionTitle}>Quick actions</h2>
-              <ul className={s.quickList}>
-                {QUICK_ACTIONS.map((a, i) => (
-                  <li key={i} className={s.quickItem}>
-                    <button className={s.quickBtn}>→ {a}</button>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          </div>
         </div>
       </div>
     </div>
