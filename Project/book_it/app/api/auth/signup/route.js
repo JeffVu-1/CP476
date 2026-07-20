@@ -3,7 +3,8 @@ import bcrypt from "bcryptjs"
 import { getSupabaseAdmin } from "@/lib/supabase-admin"
 
 export async function POST(req) {
-  const { full_name, email, password, role, business_name } = await req.json()
+  const { full_name, email: rawEmail, password, role, business_name } = await req.json()
+  const email = rawEmail?.trim().toLowerCase()
 
   if (!full_name || !email || !password || !role) {
     return NextResponse.json({ error: "All fields are required" }, { status: 400 })
