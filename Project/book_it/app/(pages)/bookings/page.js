@@ -72,9 +72,6 @@ export default function MyBookingsPage() {
                     <p className={s.time}>{formatTime(b.time_slot?.start_time)} · {b.service?.duration_minutes} min</p>
                   </div>
                   <div className={s.cardRight}>
-                    <span className={`${s.badge} ${s[`badge_${b.status}`]}`}>
-                      {STATUS_LABEL[b.status] ?? b.status}
-                    </span>
                     <p className={s.price}>${b.service?.price}</p>
                   </div>
                 </li>
