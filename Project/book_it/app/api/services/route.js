@@ -38,3 +38,23 @@ export async function POST(request) {
 
     return NextResponse.json({ service: data }, { status: 201 })
 }
+
+export async function PATCH(request) {
+    const body = await request.json()
+    const { id, category_id, title, description, price, duration_minutes, delivery_mode } = body
+    if (!id)                 return NextResponse.json({ error: "id is required" }, { status: 400 })
+    if (!category_id)        return NextResponse.json({ error: "category is required" }, { status: 400 })
+    if (!title?.trim())      return NextResponse.json({ error: "title is required" }, { status: 400 })
+    if (!price)              return NextResponse.json({ error: "price is required" }, { status: 400 })
+    if (!duration_minutes)   return NextResponse.json({ error: "duration is required" }, { status: 400 })
+    if (!delivery_mode)      return NextResponse.json({ error: "delivery_mode is required" }, { status: 400 })
+    const supabase = getSupabaseAdmin()
+    const { data, error } = await supabase
+        .from("services")
+        .update({ category_id: Number(category_id), title: title.trim(), description: description?.trim() || null, price: parseFloat(price), duration_minutes: parseInt(duration_minutes), delivery_mode })
+        .eq("id", id)
+        .select()
+        .single()
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ service: data })
+}

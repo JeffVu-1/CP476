@@ -47,3 +47,17 @@ export async function POST(request) {
 
     return NextResponse.json({ count: data.length }, { status: 201 })
 }
+
+export async function DELETE(request) {
+    const { searchParams } = new URL(request.url)
+    const service_id = searchParams.get("service_id")
+    if (!service_id) return NextResponse.json({ error: "service_id is required" }, { status: 400 })
+    const supabase = getSupabaseAdmin()
+    const { error } = await supabase
+        .from("time_slots")
+        .delete()
+        .eq("service_id", service_id)
+        .eq("is_booked", false)
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ ok: true })
+}

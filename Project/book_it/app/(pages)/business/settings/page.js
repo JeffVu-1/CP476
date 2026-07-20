@@ -167,26 +167,50 @@ export default function SettingsPage() {
 
     setSaving(true)
     try {
-      // Step 1 — create the service row
-      const svcRes  = await fetch("/api/services", {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          provider_id:      user.id,
-          category_id:      editing.category_id,
-          title:            editing.title,
-          description:      editing.description,
-          price:            editing.price,
-          duration_minutes: editing.duration_minutes,
-          delivery_mode:    editing.delivery_mode,
-        }),
-      })
-      const svcData = await svcRes.json()
-      if (!svcRes.ok) { showToast(svcData.error || "Failed to save service.", "error"); return }
+      const isNew = editing._isNew
+      let serviceId = editing.id
 
-      const serviceId = svcData.service.id
+      if (isNew) {
+        // Create new service row
+        const svcRes  = await fetch("/api/services", {
+          method:  "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            provider_id:      user.id,
+            category_id:      editing.category_id,
+            title:            editing.title,
+            description:      editing.description,
+            price:            editing.price,
+            duration_minutes: editing.duration_minutes,
+            delivery_mode:    editing.delivery_mode,
+          }),
+        })
+        const svcData = await svcRes.json()
+        if (!svcRes.ok) { showToast(svcData.error || "Failed to save service.", "error"); return }
+        serviceId = svcData.service.id
+      } else {
+        // Update existing service row
+        const svcRes  = await fetch("/api/services", {
+          method:  "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id:               editing.id,
+            category_id:      editing.category_id,
+            title:            editing.title,
+            description:      editing.description,
+            price:            editing.price,
+            duration_minutes: editing.duration_minutes,
+            delivery_mode:    editing.delivery_mode,
+          }),
+        })
+        const svcData = await svcRes.json()
+        if (!svcRes.ok) { showToast(svcData.error || "Failed to update service.", "error"); return }
 
-      // Step 2 — generate time slots from the hours config
+        // Clear old unbooked slots before regenerating
+        await fetch(`/api/time_slots?service_id=${serviceId}`, { method: "DELETE" })
+      }
+
+      // Generate time slots
       const slotsRes  = await fetch("/api/time_slots", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
@@ -200,7 +224,6 @@ export default function SettingsPage() {
       const slotsData = await slotsRes.json()
       if (!slotsRes.ok) { showToast(slotsData.error || "Failed to save availability.", "error"); return }
 
-      // Update local list with the real DB id
       setServices(prev => {
         const exists = prev.find(s => s.id === editing.id)
         const updated = { ...editing, id: serviceId, _isNew: false }
