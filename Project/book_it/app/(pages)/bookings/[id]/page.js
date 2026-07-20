@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useParams, useSearchParams } from "next/navigation";
-import { BUSINESSES } from "@/lib/data";
 import "./booking-confirmation.scss";
 
 export default function BookingConfirmationPage() {
@@ -21,15 +20,29 @@ function ConfirmationContent() {
   const dateParam    = searchParams.get("date");
   const timeParam    = searchParams.get("time");
 
-  const business = BUSINESSES.find(b => b.id === slug);
+  const [services, setServices] = useState([]);
+  const [provider, setProvider] = useState(null);
+
+  useEffect(() => {
+    if (!slug) return;
+    fetch(`/api/services?provider_id=${slug}`)
+      .then(r => r.json())
+      .then(data => {
+        const svcs = data.services ?? [];
+        setServices(svcs);
+        if (svcs.length > 0) setProvider(svcs[0].provider);
+      });
+  }, [slug]);
+
+  const bizName  = provider?.business_name || provider?.full_name || "Business";
+  const service  = services[0];
+  const fromPrice = services.length > 0 ? Math.min(...services.map(s => Number(s.price))) : null;
 
   const formattedDate = dateParam
     ? new Date(dateParam + "T12:00:00").toLocaleDateString("en-US", {
         weekday: "short", month: "long", day: "numeric", year: "numeric",
       })
     : "—";
-
-  const service = business?.services?.[0];
 
   return (
     <main className="booking-page">
@@ -57,11 +70,11 @@ function ConfirmationContent() {
         <section className="booking-card">
           <div className="business-row">
             <div className="logo-box">
-              {business ? business.name.slice(0, 2).toUpperCase() : "?"}
+              {bizName.slice(0, 2).toUpperCase()}
             </div>
             <div>
-              <h2>{business ? business.name : "Business"}</h2>
-              <p>{service ? service.name : business?.tagline ?? "Service"}</p>
+              <h2>{bizName}</h2>
+              <p>{service ? service.title : "Service"}</p>
             </div>
           </div>
 
@@ -77,13 +90,13 @@ function ConfirmationContent() {
               <p className="detail-value">{timeParam ?? "—"}</p>
             </div>
             <div>
-              <p className="detail-label">Location</p>
-              <p className="detail-value">{business?.location ?? "—"}</p>
+              <p className="detail-label">Duration</p>
+              <p className="detail-value">{service ? `${service.duration_minutes} min` : "—"}</p>
             </div>
             <div>
               <p className="detail-label">Price</p>
               <p className="detail-value">
-                {service ? `${service.price} · pay on site` : business ? `From $${business.fromPrice}` : "—"}
+                {service ? `$${service.price} · pay on site` : fromPrice ? `From $${fromPrice}` : "—"}
               </p>
             </div>
           </div>

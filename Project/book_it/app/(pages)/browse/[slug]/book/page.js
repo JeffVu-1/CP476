@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { BUSINESSES } from "@/lib/data";
 import s from "./page.module.scss";
 
 const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -35,7 +34,19 @@ function dotCount(status) {
 export default function BookDatePage() {
   const params  = useParams();
   const router  = useRouter();
-  const b       = BUSINESSES.find((biz) => biz.id === params.slug);
+  const [bizName, setBizName] = useState("");
+
+  useEffect(() => {
+    fetch(`/api/services?provider_id=${params.slug}`)
+      .then(r => r.json())
+      .then(data => {
+        const svcs = data.services ?? [];
+        if (svcs.length > 0) {
+          const p = svcs[0].provider;
+          setBizName(p?.business_name || p?.full_name || "Business");
+        }
+      });
+  }, [params.slug]);
 
   const today  = new Date();
   const todayY = today.getFullYear();
@@ -119,13 +130,11 @@ export default function BookDatePage() {
     );
   }
 
-  if (!b) return null;
-
   return (
     <div className={s.shell}>
       <div className={s.topBar}>
         <nav className={s.breadcrumb}>
-          <Link href={`/browse/${params.slug}`} className={s.breadcrumbLink}>{b.name}</Link>
+          <Link href={`/browse/${params.slug}`} className={s.breadcrumbLink}>{bizName || "Business"}</Link>
           <span className={s.sep}>›</span>
           <span>Book</span>
         </nav>
