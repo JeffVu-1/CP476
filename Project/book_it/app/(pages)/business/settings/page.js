@@ -60,6 +60,7 @@ export default function SettingsPage() {
   const [toast, setToast]           = useState(null)
   const [saved, setSaved]           = useState(false)
   const [saving, setSaving]         = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(null) // { id, title }
 
   useEffect(() => {
     const user = getUser()
@@ -238,6 +239,17 @@ export default function SettingsPage() {
     }
   }
 
+  async function handleDelete(id) {
+    const res = await fetch(`/api/services?id=${id}`, { method: "DELETE" })
+    if (res.ok) {
+      setServices(prev => prev.filter(s => s.id !== id))
+      showToast("Service deleted.")
+    } else {
+      showToast("Failed to delete service.", "error")
+    }
+    setConfirmDelete(null)
+  }
+
   function catLabel(id) {
     const c = CATEGORIES.find(c => c.id === Number(id))
     return c ? `${c.icon_emoji} ${c.name}` : "—"
@@ -278,29 +290,46 @@ export default function SettingsPage() {
         ) : (
           <div className={s.serviceCardList}>
             {services.map(svc => (
-              <button key={svc.id} className={s.serviceListCard} onClick={() => openWizard(svc)}>
-                <div className={s.serviceCardInfo}>
-                  <p className={s.serviceCardTitle}>{svc.title || "Untitled service"}</p>
-                  <p className={s.serviceCardMeta}>
-                    {catLabel(svc.category_id)}
-                    {svc.duration_minutes && <span><Clock size={11} /> {svc.duration_minutes} min</span>}
-                    {svc.price && <span><DollarSign size={11} />{svc.price}</span>}
-                    {svc.delivery_mode && <span>{svc.delivery_mode}</span>}
-                  </p>
-                </div>
-                <div className={s.serviceCardEdit}>
-                  <Pencil size={14} /> Edit
-                </div>
-              </button>
+              <div key={svc.id} className={s.serviceListCard}>
+                <button className={s.serviceCardClickable} onClick={() => openWizard(svc)}>
+                  <div className={s.serviceCardInfo}>
+                    <p className={s.serviceCardTitle}>{svc.title || "Untitled service"}</p>
+                    <p className={s.serviceCardMeta}>
+                      {catLabel(svc.category_id)}
+                      {svc.duration_minutes && <span><Clock size={11} /> {svc.duration_minutes} min</span>}
+                      {svc.price && <span><DollarSign size={11} />{svc.price}</span>}
+                      {svc.delivery_mode && <span>{svc.delivery_mode}</span>}
+                    </p>
+                  </div>
+                  <div className={s.serviceCardEdit}>
+                    <Pencil size={14} /> Edit
+                  </div>
+                </button>
+                <button
+                  className={s.serviceCardDelete}
+                  onClick={() => setConfirmDelete({ id: svc.id, title: svc.title })}
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
             ))}
           </div>
         )}
 
-        <div className={s.listFooter}>
-          <Link href="/business/dashboard" className={s.backBtn}>
-            <ArrowLeft size={14} /> Dashboard
-          </Link>
-        </div>
+        {confirmDelete && (
+          <div className={s.modalOverlay}>
+            <div className={s.modal}>
+              <h3 className={s.modalTitle}>Delete service?</h3>
+              <p className={s.modalBody}>
+                <strong>{confirmDelete.title}</strong> and all its time slots will be permanently deleted.
+              </p>
+              <div className={s.modalActions}>
+                <button className={s.modalCancel} onClick={() => setConfirmDelete(null)}>Cancel</button>
+                <button className={s.modalConfirm} onClick={() => handleDelete(confirmDelete.id)}>Delete</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     )
   }

@@ -88,20 +88,49 @@
 .serviceListCard {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  gap: 8px;
   border: 1px solid #e5e5e5;
   border-radius: 10px;
-  padding: 16px 18px;
   background: #fff;
-  cursor: pointer;
-  text-align: left;
-  width: 100%;
   transition: border-color 0.15s, box-shadow 0.15s;
 
   &:hover {
     border-color: #aaa;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+}
+
+.serviceCardClickable {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex: 1;
+  padding: 16px 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  min-width: 0;
+}
+
+.serviceCardDelete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-right: 10px;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: #bbb;
+  cursor: pointer;
+
+  &:hover {
+    background: #fef2f2;
+    color: #dc2626;
   }
 }
 
@@ -145,7 +174,7 @@
   border-radius: 6px;
   padding: 6px 12px;
 
-  .serviceListCard:hover & { background: #ececec; color: #171717; }
+  .serviceCardClickable:hover & { background: #ececec; color: #171717; }
 }
 
 .emptyState {
@@ -760,4 +789,66 @@
   cursor: pointer;
 
   &:hover { background: #333; }
+}
+
+// ─── Confirmation modal ────────────────────────────────────────────────────────
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px 32px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+.modalTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+.modalBody {
+  font-size: 0.875rem;
+  color: #555;
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+.modalActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.modalCancel {
+  padding: 9px 18px;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  font-size: 0.875rem;
+  cursor: pointer;
+  &:hover { background: #f5f5f5; }
+}
+
+.modalConfirm {
+  padding: 9px 18px;
+  border-radius: 8px;
+  border: none;
+  background: #dc2626;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  &:hover { background: #b91c1c; }
 }

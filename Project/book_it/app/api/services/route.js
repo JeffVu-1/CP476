@@ -39,6 +39,16 @@ export async function POST(request) {
     return NextResponse.json({ service: data }, { status: 201 })
 }
 
+export async function DELETE(request) {
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get("id")
+    if (!id) return NextResponse.json({ error: "id is required" }, { status: 400 })
+    const supabase = getSupabaseAdmin()
+    const { error } = await supabase.from("services").delete().eq("id", id)
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ ok: true })
+}
+
 export async function PATCH(request) {
     const body = await request.json()
     const { id, category_id, title, description, price, duration_minutes, delivery_mode } = body

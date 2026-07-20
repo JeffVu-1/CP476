@@ -8,13 +8,9 @@ import { getUser } from "@/lib/auth";
 import s from "./page.module.scss";
 
 const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-const MONTH_NAMES = [
-  "January","February","March","April","May","June",
-  "July","August","September","October","November","December",
-];
+const MONTH_NAMES = [ "January","February","March","April","May","June", "July","August","September","October","November","December",];
 
 function formatTime(timeStr) {
-  // "09:00:00" → "9:00 AM"
   const [h, m] = timeStr.split(":").map(Number);
   const ampm = h < 12 ? "AM" : "PM";
   const h12  = h % 12 || 12;
@@ -66,7 +62,6 @@ export default function BookDatePage() {
       });
   }, [params.slug]);
 
-  // Load time slots when service changes
   useEffect(() => {
     if (!selectedServiceId) return;
     setLoadingSlots(true);
@@ -182,9 +177,8 @@ export default function BookDatePage() {
           <span>Book</span>
         </nav>
         <div className={s.steps}>
-          <span className={s.stepActive}>1 · Date &amp; Time</span>
-          <span className={s.stepArrow}>→</span>
-          <span className={s.stepInactive}>2 · Confirm</span>
+          <span className={s.stepActive}>1: Date &amp; Time</span>
+          <span className={s.stepInactive}>2: Confirm</span>
         </div>
       </div>
 
@@ -306,7 +300,7 @@ export default function BookDatePage() {
             disabled={!selSlot || booking}
             onClick={handleContinue}
           >
-            {booking ? "Booking…" : "Continue →"}
+            {booking ? "Booking…" : "Continue"}
           </button>
         </div>
       </div>
