@@ -280,3 +280,80 @@
   &:hover:not(:disabled) { background: #b91c1c; }
   &:disabled { opacity: 0.6; cursor: not-allowed; }
 }
+
+.reviewBtn {
+  border: 0;
+  border-radius: 7px;
+  padding: 8px 12px;
+  background: #111827;
+  color: #fff;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: #2d3748;
+  }
+}
+
+.reviewedLabel {
+  color: #16803c;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.reviewForm {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.reviewLabel {
+  display: grid;
+  gap: 7px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.ratingPicker {
+  display: flex;
+  gap: 4px;
+}
+
+.starButton {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #d1d5db;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.starActive {
+  color: #f5b301;
+}
+
+.reviewTextarea {
+  width: 100%;
+  min-height: 110px;
+  box-sizing: border-box;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 11px;
+  font: inherit;
+  font-weight: 400;
+  resize: vertical;
+
+  &:focus {
+    outline: 2px solid #111827;
+    outline-offset: 1px;
+  }
+}
+
+.reviewError {
+  margin: 0;
+  color: #b42318;
+  font-size: 0.85rem;
+}

@@ -22,6 +22,7 @@ export default function BusinessProfilePage() {
   const params = useParams();
   const [activeTab, setActiveTab] = useState("Overview");
   const [services, setServices]   = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [provider, setProvider]   = useState(null);
   const [loading, setLoading]     = useState(true);
   const currentUser = getUser();
@@ -31,11 +32,22 @@ export default function BusinessProfilePage() {
     async function load() {
       setLoading(true);
       try {
-        const res  = await fetch(`/api/services?provider_id=${params.slug}`);
-        const data = await res.json();
-        const svcs = data.services ?? [];
+        const [servicesResponse, reviewsResponse] = await Promise.all([
+          fetch(`/api/services?provider_id=${params.slug}`),
+          fetch(`/api/reviews?provider_id=${params.slug}`),
+        ]);
+        
+        const servicesData = await servicesResponse.json();
+        const reviewsData = await reviewsResponse.json();
+        
+        const svcs = servicesData.services ?? [];
+        
         setServices(svcs);
-        if (svcs.length > 0) setProvider(svcs[0].provider);
+        setReviews(reviewsData.reviews ?? []);
+        
+        if (svcs.length > 0) {
+          setProvider(svcs[0].provider);
+        }
       } finally {
         setLoading(false);
       }
@@ -122,7 +134,7 @@ export default function BusinessProfilePage() {
             {activeTab === "Reviews" && (
               <section className={s.section}>
                 <h2 className={s.sectionTitle}>Reviews</h2>
-                <p className={s.bodyText} style={{ color: "#888" }}>No reviews yet.</p>
+                <ReviewList reviews={reviews} />
               </section>
             )}
 
@@ -177,6 +189,44 @@ function ServiceList({ services }) {
             <p className={s.serviceDuration}>{svc.duration_minutes} min · {svc.delivery_mode}</p>
           </div>
           <span className={s.servicePrice}>${svc.price}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function ReviewList({ reviews }) {
+  if (reviews.length === 0) {
+    return (
+      <p className={s.bodyText} style={{ color: "#888" }}>
+        No reviews yet.
+      </p>
+    );
+  }
+
+  return (
+    <ul className={s.reviewList}>
+      {reviews.map(review => (
+        <li key={review.id} className={s.reviewItem}>
+          <div className={s.reviewHeader}>
+            <div>
+              <p className={s.reviewCustomer}>
+                {review.customer?.full_name || "Customer"}
+              </p>
+
+              <p className={s.reviewService}>
+                {review.service?.title}
+              </p>
+            </div>
+
+            <Stars rating={review.rating} />
+          </div>
+
+          <p className={s.reviewComment}>{review.comment}</p>
+
+          <p className={s.reviewDate}>
+            {new Date(review.created_at).toLocaleDateString()}
+          </p>
         </li>
       ))}
     </ul>

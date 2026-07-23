@@ -393,3 +393,49 @@
   align-items: center;
   gap: 6px;
 }
+
+.reviewList {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reviewItem {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 18px;
+  background: #fff;
+}
+
+.reviewHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.reviewCustomer {
+  margin: 0;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.reviewService {
+  margin: 3px 0 0;
+  color: #6b7280;
+  font-size: 0.82rem;
+}
+
+.reviewComment {
+  margin: 14px 0 0;
+  color: #374151;
+  line-height: 1.6;
+}
+
+.reviewDate {
+  margin: 12px 0 0;
+  color: #9ca3af;
+  font-size: 0.78rem;
+}
