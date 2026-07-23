@@ -45,15 +45,52 @@ export async function GET(request) {
     const supabase = getSupabaseAdmin()
 
     // Customer bookings list
-    if (customer_id) {
-        const { data, error } = await supabase
-            .from("bookings")
-            .select(`*, service:service_id (id, title, duration_minutes, price, provider:provider_id (id, full_name, business_name)), time_slot:time_slot_id (slot_date, start_time)`)
-            .eq("customer_id", customer_id)
-            .order("created_at", { ascending: false })
-        if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-        return NextResponse.json({ bookings: data ?? [] })
+    // Customer bookings list
+if (customer_id) {
+    const { data, error } = await supabase
+        .from("bookings")
+        .select(`*, service:service_id (id, title, duration_minutes, price, provider:provider_id (id, full_name, business_name)), time_slot:time_slot_id (slot_date, start_time)`)
+        .eq("customer_id", customer_id)
+        .order("created_at", { ascending: false })
+
+    if (error) {
+        return NextResponse.json(
+            { error: error.message },
+            { status: 500 }
+        )
     }
+
+    const bookings = data ?? []
+
+    if (bookings.length === 0) {
+        return NextResponse.json({ bookings: [] })
+    }
+
+    const bookingIds = bookings.map(booking => booking.id)
+
+    const { data: reviews, error: reviewsError } = await supabase
+        .from("reviews")
+        .select("id, booking_id, rating, comment, created_at")
+        .in("booking_id", bookingIds)
+
+    if (reviewsError) {
+        return NextResponse.json(
+            { error: reviewsError.message },
+            { status: 500 }
+        )
+    }
+
+    const reviewByBooking = new Map(
+        (reviews ?? []).map(review => [review.booking_id, review])
+    )
+
+    const bookingsWithReviews = bookings.map(booking => ({
+        ...booking,
+        review: reviewByBooking.get(booking.id) ?? null,
+    }))
+
+    return NextResponse.json({ bookings: bookingsWithReviews })
+}
 
     // Single booking lookup
     if (booking_id) {
