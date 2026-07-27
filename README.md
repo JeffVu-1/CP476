@@ -7,6 +7,7 @@
 
 ## Table of Contents
 
+
 1. [Project Overview](#project-overview)
 2. [Features](#features)
 3. [Technology Stack](#technology-stack)
@@ -21,8 +22,10 @@
 9. [API Routes Overview](#api-routes-overview)
 10. [Security Practices](#security-practices)
 11. [Testing](#testing)
-12. [Project Management](#project-management)
-13. [License](#license)
+12. [Milestone 3 Deliverables](#milestone-3-deliverables)
+13. [Known Issues / Limitations](#known-issues--limitations)
+14. [Project Management](#project-management)
+15. [License](#license)
 
 ---
 
