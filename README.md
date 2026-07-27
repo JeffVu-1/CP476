@@ -119,57 +119,69 @@ Once a customer finds a service, they can view details, select a date, choose an
 ## Repository Structure
 
 ```
-book-it/
-├── README.md                        ← This file (in parent CP476/ directory)
+CP476/
+├── README.md
+├── links.txt
 ├── .gitignore
-├── jsconfig.json
-├── next.config.mjs                  ← Next.js configuration
-├── package.json
-├── package-lock.json
+├── docs/
+│   ├── milestone-01/
+│   │   └── WireFrameImages/
+│   ├── milestone-02/
+│   │   ├── Milestone_2.docx
+│   │   └── TableCreateScript.sql
+│   └── milestone-03/
+│       ├── testing-report.md
+│       ├── demo-script.md
+│       ├── presentation-outline.md
+│       └── known-issues.md
 │
-├── app/                             ← Next.js App Router root
-│   ├── layout.js                    ← Root layout (wraps all pages with nav)
-│   ├── globals.scss                 ← Global stylesheet
-│   │
-│   ├── (home)/
-│   │   ├── page.js                  ← Homepage (category grid + search bar)
-│   │   └── page.module.scss
-│   │
-│   ├── (pages)/                     ← Route group for secondary pages
-│   │   ├── browse/
-│   │   │   ├── page.js              ← Browse / search results listing
-│   │   │   └── page.module.scss
-│   │   ├── categories/
-│   │   │   ├── page.js              ← Category overview page
-│   │   │   └── page.module.scss
-│   │   ├── for-business/
-│   │   │   ├── page.js              ← Provider landing / info page
-│   │   │   └── page.module.scss
-│   │   ├── login/
-│   │   │   ├── page.js
-│   │   │   └── page.module.scss
-│   │   └── signup/
-│   │       ├── page.js
-│   │       └── page.module.scss
-│   │
-│   └── api/                         ← Next.js API Routes (back-end endpoints)
-│       └── categories/
-│           └── route.js             ← GET /api/categories
-│
-├── components/                      ← Shared React components
-│   ├── categoryGrid/
-│   │   ├── categoryGrid.js
-│   │   └── categoryGrid.module.scss
-│   ├── navigationHeader/
-│   │   ├── navigationHeader.js
-│   │   ├── navigationHeader.module.scss
-│   │   └── ConditionalNav.js        ← Hides nav on login/signup pages
-│   └── searchBar/
-│       ├── searchBar.js
-│       └── searchBar.module.scss
-│
-└── lib/
-    └── supabase.js                  ← Supabase client initialization
+└── Project/book_it/                 ← Next.js application root
+    ├── package.json
+    ├── jsconfig.json
+    ├── next.config.mjs
+    │
+    ├── app/
+    │   ├── layout.js
+    │   ├── globals.scss
+    │   ├── (home)/
+    │   │   ├── page.js
+    │   │   └── page.module.scss
+    │   ├── (pages)/
+    │   │   ├── login/
+    │   │   ├── signup/
+    │   │   ├── browse/
+    │   │   │   ├── page.js
+    │   │   │   └── [slug]/
+    │   │   │       ├── page.js              ← business profile
+    │   │   │       └── book/                ← booking flow
+    │   │   ├── bookings/
+    │   │   │   ├── page.js                  ← customer bookings list
+    │   │   │   └── [id]/                    ← booking confirmation
+    │   │   ├── categories/
+    │   │   ├── for-business/
+    │   │   └── business/
+    │   │       ├── dashboard/
+    │   │       ├── bookings/
+    │   │       ├── settings/
+    │   │       └── calendar/[week]/
+    │   └── api/
+    │       ├── auth/login/route.js
+    │       ├── auth/signup/route.js
+    │       ├── categories/route.js
+    │       ├── services/route.js
+    │       ├── bookings/route.js
+    │       └── time_slots/route.js
+    │
+    ├── components/
+    │   ├── categoryGrid/
+    │   ├── navigationHeader/
+    │   │   └── ConditionalNav.js
+    │   └── searchBar/
+    │
+    └── lib/
+        ├── supabase.js               ← browser client (anon key)
+        ├── supabase-admin.js         ← server-side admin client (service key)
+        └── auth.js                   ← client-side session helpers (localStorage)
 ```
 
 ---
@@ -290,7 +302,7 @@ NEXT_PUBLIC_BASE_URL=http://localhost:3000
 
 ## Database Schema Overview
 
-The application uses six relational tables hosted on Supabase (PostgreSQL).
+The application uses Six relational tables hosted on Supabase (PostgreSQL). Full `CREATE TABLE` statements are in `docs/milestone-02/TableCreateScript.sql`.
 
 | Table | Description |
 |---|---|
@@ -312,13 +324,11 @@ The application uses six relational tables hosted on Supabase (PostgreSQL).
 | bookings | reviews | One completed booking has one review (UNIQUE) |
 | categories | services | One category contains many services |
 
-The full `CREATE TABLE` SQL is located at `lib/db/schema.sql`.
-
 ---
 
 ## API Routes Overview
 
-All API endpoints live under `src/api/` and are accessed at `/api/...`. Responses are in JSON format.
+All routes live under `app/api/` and are accessed at `/api/...`. Responses are JSON.
 
 ### Authentication — `/api/auth`
 
@@ -327,6 +337,12 @@ All API endpoints live under `src/api/` and are accessed at `/api/...`. Response
 | `POST` | `/api/auth/register` | Public | Register a new customer or provider |
 | `POST` | `/api/auth/login` | Public | Log in and create a session |
 | `POST` | `/api/auth/logout` | Authenticated | Destroy the session and log out |
+
+### Categories — `/api/categories`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/categories` | List all categories |
 
 ### Services — `/api/services`
 
@@ -367,24 +383,22 @@ All API endpoints live under `src/api/` and are accessed at `/api/...`. Response
 
 ## Security Practices
 
-- **SQL Injection Prevention:** All database interactions go through the Supabase client, which uses parameterized queries internally. Raw string concatenation with user input is never used.
-- **XSS Prevention:** React's JSX escapes output by default. `dangerouslySetInnerHTML` is never used with user-generated content.
-- **Session Security:** Cookies are configured with `httpOnly: true`, `sameSite: 'strict'`, and `secure: true` in production.
-- **Environment Variable Separation:** The Supabase service role key is kept strictly server-side. Only the public anon key is used in client-side code.
-- **Authorization Checks:** Every protected API route verifies the authenticated user's role and ownership before performing any operation.
-- **Input Validation:** All inputs are validated both client-side (for immediate feedback) and server-side (for security).
+- **Password storage:** Passwords are hashed with `bcryptjs` before insertion into `users.password_hash`; plaintext passwords are never stored (`app/api/auth/signup/route.js`).
+- **SQL Injection Prevention:** All database access goes through the Supabase JS client, which uses parameterized queries internally.
+- **XSS Prevention:** React/JSX escapes rendered output by default; `dangerouslySetInnerHTML` is not used with user-generated content anywhere in the app.
+- **Service key isolation:** `SUPABASE_SERVICE_KEY` is only read in server-side files (`lib/supabase-admin.js`) and is never imported into a `"use client"` file.
+- **Input Validation:** API routes validate required fields server-side in addition to HTML5 client-side validation on forms.
+- **Session model (current limitation):** The signed-in user is currently stored client-side via `localStorage` (`lib/auth.js`) rather than an httpOnly cookie session — see [Known Issues / Limitations](#known-issues--limitations).
+
 
 ---
 
 ## Testing
 
-Test cases and results are documented in `tests/test-plan.md`. The full testing summary report is in `docs/milestone-03/`.
+The full Milestone 3 testing summary — test plan, executed cases, results, and defects — is documented in `docs/milestone-03/testing-report.md`.
 
-**Run automated tests:**
+No automated test runner is configured in `package.json` at this time; all testing is manual and documented in the Milestone 3 testing report.
 
-```bash
-npm test
-```
 
 **Manual testing covers:**
 
@@ -396,6 +410,32 @@ npm test
 | Cancellation | Cancel an upcoming booking, attempt to cancel a past booking (expect error) |
 | Validation | Submit forms with empty required fields, negative price, past date for time slot |
 | Security | SQL injection attempt in login field, XSS payload in service description |
+
+---
+
+## Milestone 3 Deliverables
+
+| Deliverable | Location |
+|---|---|
+| Functional full-stack application | `Project/book_it/` |
+| Testing summary report | `docs/milestone-03/testing-report.md` |
+| Known issues / limitations | `docs/milestone-03/known-issues.md` |
+| Demo video | See `links.txt` |
+| Presentation artifact | `docs/milestone-03/` |
+| Final Kanban board snapshot | See `links.txt` and GitHub Projects board |
+| Final wiki/blog reflection | GitHub Wiki (see `links.txt`) |
+
+---
+
+## Known Issues / Limitations
+
+See `docs/milestone-03/known-issues.md` for the complete list. Summary:
+
+- Authentication session state is stored client-side (`localStorage`) rather than server-verified httpOnly cookies
+- Provider ownership checks on service/booking mutations rely on the request payload rather than a verified server session
+- Price and duration fields do not enforce positive-value validation at the server level
+- The review/rating feature has a database schema but no UI implemented
+- No automated test suite is configured
 
 ---
 
